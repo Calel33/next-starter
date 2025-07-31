@@ -114,10 +114,18 @@ CLERK_WEBHOOK_SECRET=whsec_your_webhook_secret_here
 NEXT_PUBLIC_CLERK_FRONTEND_API_URL=https://your-clerk-frontend-api-url.clerk.accounts.dev
 ```
 
-7. Set up Clerk webhooks:
-   - In your Clerk dashboard, configure webhook endpoint: `{your_domain}/clerk-users-webhook`
-   - Enable events: `user.created`, `user.updated`, `user.deleted`, `paymentAttempt.updated`
-   - Copy the webhook signing secret to your Convex environment variables
+7. Set up Clerk webhooks (in Clerk Dashboard, not Convex):
+   - Go to your Clerk dashboard → Webhooks section
+   - Create a new endpoint with URL: `https://your-deployed-app.com/api/clerk-users-webhook`
+   - Enable these events:
+     - `user.created` - Syncs new users to Convex
+     - `user.updated` - Updates user data in Convex
+     - `user.deleted` - Removes users from Convex
+     - `paymentAttempt.updated` - Tracks subscription payments
+   - Copy the webhook signing secret (starts with `whsec_`)
+   - Add it to your Convex dashboard environment variables as `CLERK_WEBHOOK_SECRET`
+   
+   **Note**: The webhook URL `/clerk-users-webhook` is handled by Convex's HTTP router, not Next.js. Svix is used to verify webhook signatures for security.
 
 8. Configure Clerk Billing:
    - Set up your pricing plans in Clerk dashboard

@@ -74,14 +74,13 @@ cp .env.example .env.local
 
 3. Configure your environment variables in `.env.local`:
 
-```bash
-# Convex Configuration
-CONVEX_DEPLOYMENT=your_convex_deployment_here
-NEXT_PUBLIC_CONVEX_URL=your_convex_url_here
+3a. run `npx convex dev` or `bunx convex dev` to configure your convex database variables
 
+```bash
 # Clerk Authentication & Billing
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key_here
-CLERK_SECRET_KEY=your_clerk_secret_key_here
+# Get these from your Clerk dashboard at https://dashboard.clerk.com
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_your_clerk_publishable_key_here
+CLERK_SECRET_KEY=sk_test_your_clerk_secret_key_here
 
 # Clerk Frontend API URL (from JWT template - see step 5)
 NEXT_PUBLIC_CLERK_FRONTEND_API_URL=https://your-clerk-frontend-api-url.clerk.accounts.dev

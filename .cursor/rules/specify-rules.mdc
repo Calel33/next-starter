@@ -1,0 +1,25 @@
+# feat-tree1 Development Guidelines
+
+Auto-generated from all feature plans. Last updated: 2025-09-21
+
+## Active Technologies
+- TypeScript (Next.js 15), Convex functions (TS) + Next.js App Router, TailwindCSS v4, shadcn/ui, Radix UI, Convex, Clerk, Mapbox GL JS (001-idea-md)
+
+## Project Structure
+```
+backend/
+frontend/
+tests/
+```
+
+## Commands
+npm test; npm run lint
+
+## Code Style
+TypeScript (Next.js 15), Convex functions (TS): Follow standard conventions
+
+## Recent Changes
+- 001-idea-md: Added TypeScript (Next.js 15), Convex functions (TS) + Next.js App Router, TailwindCSS v4, shadcn/ui, Radix UI, Convex, Clerk, Mapbox GL JS
+
+<!-- MANUAL ADDITIONS START -->
+<!-- MANUAL ADDITIONS END -->

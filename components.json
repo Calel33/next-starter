@@ -17,5 +17,18 @@
     "lib": "@/lib",
     "hooks": "@/hooks"
   },
-  "iconLibrary": "lucide"
+  "iconLibrary": "lucide",
+  "registries": {
+    "@acme": "https://registry.acme.com/{name}.json",
+    "@internal": {
+      "url": "https://internal.company.com/{name}.json",
+"@reactbits": "https://reactbits.dev/{name}.json",
+    "@skiper-ui": "https://skiper-ui.com/{name}.json",
+    "@kokonutui": "https://kokonutui.com/{name}.json",
+    "@cult-ui": "https://www.cult-ui.com/{name}.json",
+      "headers": {
+        "Authorization": "Bearer ${REGISTRY_TOKEN}"
+      }
+    }
+  }
 }

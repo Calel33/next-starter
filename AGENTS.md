@@ -59,6 +59,8 @@ elite-next-starter/
 ├── hooks/                # Custom React hooks
 ├── lib/                  # Utility functions
 ├── docs/                 # Project documentation
+│   ├── design-system/    # Design system tokens and guidelines
+│   └── core/            # Core project documentation
 └── middleware.ts         # Route protection middleware
 ```
 
@@ -251,17 +253,268 @@ export default defineSchema({
 - **Foreign keys** use `v.id("tableName")` type
 - **Index order matters** - query fields in same order as defined
 
-## 🎨 UI Development Guidelines
+## 🎨 Design System & UI Development Guidelines
 
-### Design System
-- **Base Components**: shadcn/ui for accessible, customizable components
-- **Custom Components**: Build on top of base components
-- **Theme System**: CSS custom properties for light/dark themes
-- **Responsive Design**: Mobile-first with Tailwind breakpoints
+### Design System Overview
+Our design system provides a comprehensive foundation for consistent, accessible, and beautiful UI components. **CRITICAL: Always use design system tokens - no hard-coded styles allowed.**
+
+### 🎨 Color Tokens
+
+#### Light Mode (`:root`)
+```css
+--background: #f7f9f3;
+--foreground: #000000;
+--card: #ffffff;
+--card-foreground: #000000;
+--popover: #ffffff;
+--popover-foreground: #000000;
+--primary: #4f46e5;
+--primary-foreground: #ffffff;
+--secondary: #14b8a6;
+--secondary-foreground: #ffffff;
+--muted: #f0f0f0;
+--muted-foreground: #333333;
+--accent: #f59e0b;
+--accent-foreground: #000000;
+--destructive: #ef4444;
+--destructive-foreground: #ffffff;
+--border: #000000;
+--input: #737373;
+--ring: #a5b4fc;
+```
+
+#### Dark Mode (`.dark`)
+```css
+--background: #000000;
+--foreground: #ffffff;
+--card: #1a212b;
+--card-foreground: #ffffff;
+--popover: #1a212b;
+--popover-foreground: #ffffff;
+--primary: #818cf8;
+--primary-foreground: #000000;
+--secondary: #2dd4bf;
+--secondary-foreground: #000000;
+--muted: #333333;
+--muted-foreground: #cccccc;
+--accent: #fcd34d;
+--accent-foreground: #000000;
+--destructive: #f87171;
+--destructive-foreground: #000000;
+--border: #545454;
+--input: #ffffff;
+--ring: #818cf8;
+```
+
+#### Data Visualization Colors
+```css
+/* Light Mode Charts */
+--chart-1: #4f46e5;
+--chart-2: #14b8a6;
+--chart-3: #f59e0b;
+--chart-4: #ec4899;
+--chart-5: #22c55e;
+
+/* Dark Mode Charts */
+--chart-1: #818cf8;
+--chart-2: #2dd4bf;
+--chart-3: #fcd34d;
+--chart-4: #f472b6;
+--chart-5: #4ade80;
+```
+
+#### Sidebar UI Shell Colors
+```css
+/* Light Sidebar */
+--sidebar-background: #f7f9f3;
+--sidebar-foreground: #000000;
+--sidebar-primary: #4f46e5;
+--sidebar-primary-foreground: #ffffff;
+--sidebar-accent: #f59e0b;
+--sidebar-accent-foreground: #000000;
+--sidebar-border: #000000;
+--sidebar-ring: #a5b4fc;
+
+/* Dark Sidebar */
+--sidebar-background: #000000;
+--sidebar-foreground: #ffffff;
+--sidebar-primary: #818cf8;
+--sidebar-primary-foreground: #000000;
+--sidebar-accent: #fcd34d;
+--sidebar-accent-foreground: #000000;
+--sidebar-border: #ffffff;
+--sidebar-ring: #818cf8;
+```
+
+### ✍️ Typography System
+
+#### Font Families
+```css
+--font-sans: "Allerta Stencil", ui-sans-serif, system-ui;
+--font-serif: "Amiri Quran", ui-serif;
+--font-mono: "Anonymous Pro", ui-monospace;
+```
+
+#### Type Scale
+- **H1**: 32–36px (2rem–2.25rem)
+- **H2**: 24–28px (1.5rem–1.75rem)
+- **H3**: 18–20px (1.125rem–1.25rem)
+- **Body**: 16px (1rem)
+- **Small**: 14px (0.875rem)
+
+#### Font Weights
+- **Regular**: 400
+- **Semibold**: 600
+- **Bold**: 700
+
+#### Letter Spacing
+```css
+--tracking-normal: 0.025em;
+--tracking-tighter: -0.05em;
+--tracking-tight: -0.025em;
+--tracking-wide: 0.05em;
+--tracking-wider: 0.1em;
+--tracking-widest: 0.25em;
+```
+
+### 🟦 Spacing & Layout
+
+#### Spacing Scale (4/8px modular scale)
+```css
+--spacing: 0.25rem; /* Base unit: 4px */
+```
+
+#### Container & Grid
+- **Container max-width**: 1280px
+- **Gutters**: 16–24px
+- **Grid**: 12-column flexible system
+
+### 🟣 Shape & Shadows
+
+#### Border Radius
+```css
+--radius: 1rem;
+--radius-sm: calc(var(--radius) - 4px);
+--radius-md: calc(var(--radius) - 2px);
+--radius-lg: var(--radius);
+--radius-xl: calc(var(--radius) + 4px);
+```
+
+#### Shadow System
+```css
+--shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+--shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+--shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+--shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+--shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+```
+
+### 🌑 Design System Usage Rules
+
+#### Color Usage Guidelines
+1. **Light mode default** with dark mode via `.dark` class toggle
+2. **Primary** (#4f46e5 / #818cf8) is brand-defining → use only for main actions
+3. **Accent** (#f59e0b / #fcd34d) reserved for highlights and alerts, not base UI
+4. **Sidebar tokens** keep shell navigation consistent across modes
+5. **Never use hard-coded colors** - always reference design tokens
+
+#### Component Development with Design System
+```typescript
+// CORRECT: Using design system tokens
+import { forwardRef } from "react";
+import { cn } from "@/lib/utils";
+
+interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+  variant?: "default" | "secondary" | "accent" | "destructive";
+  size?: "sm" | "md" | "lg";
+}
+
+const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+  ({ className, variant = "default", size = "md", ...props }, ref) => {
+    return (
+      <button
+        ref={ref}
+        className={cn(
+          // Base styles using design tokens
+          "inline-flex items-center justify-center rounded-lg font-semibold transition-colors",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+          // Variant styles using design tokens
+          {
+            "bg-primary text-primary-foreground hover:bg-primary/90": variant === "default",
+            "bg-secondary text-secondary-foreground hover:bg-secondary/80": variant === "secondary",
+            "bg-accent text-accent-foreground hover:bg-accent/80": variant === "accent",
+            "bg-destructive text-destructive-foreground hover:bg-destructive/90": variant === "destructive",
+          },
+          // Size variants using spacing tokens
+          {
+            "h-8 px-3 text-sm": size === "sm",
+            "h-10 px-4": size === "md",
+            "h-12 px-6 text-lg": size === "lg",
+          },
+          className
+        )}
+        {...props}
+      />
+    );
+  }
+);
+
+Button.displayName = "Button";
+export { Button };
+```
+
+#### Typography Component Example
+```typescript
+// Typography component using design system
+import { cn } from "@/lib/utils";
+
+interface TypographyProps extends React.HTMLAttributes<HTMLElement> {
+  variant?: "h1" | "h2" | "h3" | "body" | "small";
+  weight?: "regular" | "semibold" | "bold";
+  tracking?: "normal" | "tight" | "wide";
+}
+
+const Typography = forwardRef<HTMLElement, TypographyProps>(
+  ({ className, variant = "body", weight = "regular", tracking = "normal", ...props }, ref) => {
+    const Component = variant === "body" || variant === "small" ? "p" : variant;
+    
+    return (
+      <Component
+        ref={ref}
+        className={cn(
+          "font-sans",
+          // Variant styles
+          {
+            "text-2xl md:text-4xl": variant === "h1",
+            "text-xl md:text-2xl": variant === "h2",
+            "text-lg md:text-xl": variant === "h3",
+            "text-base": variant === "body",
+            "text-sm": variant === "small",
+          },
+          // Weight styles
+          {
+            "font-normal": weight === "regular",
+            "font-semibold": weight === "semibold",
+            "font-bold": weight === "bold",
+          },
+          // Tracking styles
+          {
+            "tracking-normal": tracking === "normal",
+            "tracking-tight": tracking === "tight",
+            "tracking-wide": tracking === "wide",
+          },
+          className
+        )}
+        {...props}
+      />
+    );
+  }
+);
+```
 
 ### Animation Guidelines
 ```typescript
-// Use Framer Motion for complex animations
+// Use Framer Motion for complex animations with design system values
 import { motion } from "framer-motion";
 
 const variants = {
@@ -274,26 +527,23 @@ const variants = {
   initial="hidden"
   animate="visible"
   transition={{ duration: 0.3 }}
+  className="bg-card text-card-foreground p-6 rounded-lg shadow-md"
 >
-  Content
+  Content using design tokens
 </motion.div>
 ```
 
-### Theme Customization
-```css
-/* app/globals.css */
-:root {
-  --primary: 210 40% 98%;
-  --secondary: 210 40% 96%;
-  --accent: 210 40% 78%;
-}
-
-.dark {
-  --primary: 222.2 84% 4.9%;
-  --secondary: 217.2 32.6% 17.5%;
-  --accent: 217.2 32.6% 17.5%;
-}
+### Design System Installation
+To install the complete design system theme:
+```bash
+npx shadcn@latest add https://tweakcn.com/r/themes/cmfok4nnx000d04l7552dciz9
 ```
+
+### Base Components
+- **shadcn/ui**: Accessible, customizable base components
+- **Custom Components**: Build on top of base components using design tokens
+- **Theme System**: CSS custom properties for seamless light/dark mode switching
+- **Responsive Design**: Mobile-first approach with Tailwind breakpoints
 
 ## 🔗 Integration Patterns
 

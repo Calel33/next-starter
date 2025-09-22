@@ -4,6 +4,8 @@ Auto-generated from all feature plans. Last updated: 2025-09-21
 
 ## Active Technologies
 - TypeScript (Next.js 15), Convex functions (TS) + Next.js App Router, TailwindCSS v4, shadcn/ui, Radix UI, Convex, Clerk, Mapbox GL JS (001-idea-md)
+- TypeScript 5.x, Next.js 15.3.5, React 19.0.0 + Convex 1.25.2 (backend), Clerk 6.24.0 (auth), Mapbox GL JS (mapping), shadcn/ui + Radix UI (components), TailwindCSS v4 (styling) (001-idea-md)
+- Convex (real-time database with serverless functions) (001-idea-md)
 
 ## Project Structure
 ```
@@ -19,6 +21,7 @@ npm test; npm run lint
 TypeScript (Next.js 15), Convex functions (TS): Follow standard conventions
 
 ## Recent Changes
+- 001-idea-md: Added TypeScript 5.x, Next.js 15.3.5, React 19.0.0 + Convex 1.25.2 (backend), Clerk 6.24.0 (auth), Mapbox GL JS (mapping), shadcn/ui + Radix UI (components), TailwindCSS v4 (styling)
 - 001-idea-md: Added TypeScript (Next.js 15), Convex functions (TS) + Next.js App Router, TailwindCSS v4, shadcn/ui, Radix UI, Convex, Clerk, Mapbox GL JS
 
 <!-- MANUAL ADDITIONS START -->

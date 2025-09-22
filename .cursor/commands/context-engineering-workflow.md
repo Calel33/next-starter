@@ -47,6 +47,7 @@ A systematic approach to clarify tasks, gather context, research solutions, and 
 1. Ask which tools to use for research:
    - Archon MCP (for documentation and code examples)
    - DeepWiki MCP (for GitHub repository documentation)
+   - Other MCP tools
    - Web search (for current best practices)
    - Local documentation
    - Other relevant sources
@@ -67,7 +68,17 @@ A systematic approach to clarify tasks, gather context, research solutions, and 
 4. Document technical requirements and constraints
 5. Identify potential challenges and solutions
 
-**Deliverable:** Research notes + patterns for implementation + Task-specific Research docs
+**Deliverables (files):**
+- `docs/tasks/[task-name]/research/RESEARCH_SUMMARY.md` — concise findings, trade‑offs, recommendation
+- `docs/tasks/[task-name]/research/ADRs/ADR-XXXX-<slug>.md` — Architecture Decision Record(s) for key decisions
+- `docs/tasks/[task-name]/research/PATTERNS_AND_EXAMPLES.md` — implementation patterns and minimal snippets
+- `docs/tasks/[task-name]/research/INTEGRATION_NOTES.md` — env vars, webhooks, affected modules, rollout
+- `docs/tasks/[task-name]/research/SECURITY_PERFORMANCE_NOTES.md` — auth boundaries, validation, indexes, caching
+- `docs/tasks/[task-name]/research/TEST_STRATEGY.md` — unit/integration/E2E scope and success criteria
+- `docs/tasks/[task-name]/research/RISKS_AND_MITIGATIONS.md` — risks table with mitigations and owners
+- `docs/tasks/[task-name]/research/OPEN_QUESTIONS.md` — unresolved questions and assumptions
+
+Templates available at `docs/tasks/TEMPLATE/`.
 
 **Research Areas:**
 - Technical implementation approaches
@@ -78,6 +89,15 @@ A systematic approach to clarify tasks, gather context, research solutions, and 
 - Testing strategies
 - code examples
 
+**Checklist:**
+- [ ] Create `RESEARCH_SUMMARY.md`
+- [ ] Draft ADR(s) if decisions are needed
+- [ ] Document patterns/examples
+- [ ] Write integration notes (envs, webhooks, modules impacted)
+- [ ] Capture security & performance notes
+- [ ] Define testing strategy and success criteria
+- [ ] Log risks and mitigations
+- [ ] List open questions and assumptions
 
 **Output:** Complete research documentation
 
@@ -150,7 +170,7 @@ A systematic approach to clarify tasks, gather context, research solutions, and 
 ### Workflow Outputs
 1. **Clarified Task Document** - Confirmed requirements and scope
 2. **Task Context File** - Comprehensive project context, current state, and impacted areas analysis
-3. **Research Documentation** - Patterns, best practices, and examples
+3. **Research Documentations** - Deliverables from Phase 4
 4. **Implementation Plan** - Detailed plan with full system coverage
 
 ### Quality Assurance

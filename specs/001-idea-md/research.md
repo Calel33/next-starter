@@ -1,52 +1,160 @@
-# Research – Local Business Directory MVP
+# Research: Local Business Directory MVP
 
-## Decisions
+**Date**: 2025-09-22  
+**Phase**: 0 - Research & Technical Analysis  
+**Status**: Complete
 
-- Mapping Library: Mapbox GL JS (client-side) for interactive map, clustering, and pins.
-  - Rationale: Modern vector maps, strong ecosystem, aligns with project requirement.
-  - Alternatives: Google Maps, Leaflet + MapLibre (not selected to keep scope aligned).
+## Research Tasks Completed
 
-- Geolocation Behavior: Ask for browser geolocation; fallback to manual location input.
-  - Rationale: Faster time-to-first-result; graceful fallback.
+### 1. Mapbox GL JS Integration with Next.js 15 + React 19
 
-- Search & Ranking: Relevance + distance with "open now" boost, P95 ≤ 800 ms.
-  - Rationale: Simple, predictable; matches spec FR-020 performance target.
+**Decision**: Use Mapbox GL JS v3.x with React wrapper components
+**Rationale**: 
+- Native WebGL performance for smooth map interactions
+- Excellent mobile support and touch gestures
+- Rich clustering and custom marker capabilities
+- Strong TypeScript support
+- Compatible with React 19 and Next.js 15 SSR
 
-- Data Model: Listings, Categories (many-to-many), Owners, AnalyticsEvent.
-  - Rationale: Matches user stories (visitor discovery, owner manage, admin approve).
+**Integration Approach**:
+- Install `mapbox-gl` and `@types/mapbox-gl` packages
+- Create custom React hook `useMapbox` for map instance management
+- Implement dynamic import to avoid SSR issues
+- Use environment variable for API key management
 
-- Moderation Workflow: Pending → Approved/Rejected with reasons; owner notified.
-  - Rationale: Ensures quality and trust.
+**Alternatives Considered**:
+- Google Maps API: More expensive, less customization
+- Leaflet: Less performant for large datasets, limited mobile experience
+- React Map GL: Additional abstraction layer, potential React 19 compatibility issues
 
-- Featured Listings: Monthly per-listing plan; top-of-list pin; max 2/page; rotation.
-  - Rationale: Simple MVP monetization; capped to avoid overwhelming organic results.
+### 2. Geolocation and Address Handling
 
-- Reviews & Ratings: 1–5 stars; logged-in reviewers; post-moderation + report abuse; owner replies.
-  - Rationale: Familiar UX, manageable moderation.
+**Decision**: Combine browser geolocation with Mapbox Geocoding API
+**Rationale**:
+- Browser geolocation for initial user positioning
+- Mapbox Geocoding for address search and reverse geocoding
+- Consistent data source with mapping service
+- Built-in address validation and normalization
 
-- Saved Lists/Accounts: Magic-link auth; Favorites only; cross-device; 24m purge.
-  - Rationale: Minimal friction, simple scope.
+**Implementation**:
+- Custom hook `useGeolocation` with permission handling
+- Geocoding service wrapper with caching
+- Address validation using Mapbox place types
+- Fallback to manual location entry
 
-- Analytics: listing_view, search_query, contact_click, directions_click; 12m aggregate retention.
-  - Rationale: Tracks success signals while minimizing data retention.
+### 3. Search and Filtering Architecture
 
-- Data Retention: Archived listings/images 24m; DSR 30 days; backups/logs 90 days.
-  - Rationale: Clear policies; operationally simple.
+**Decision**: Convex queries with spatial indexing simulation
+**Rationale**:
+- Convex doesn't have native spatial indexes, but can simulate with bounding box queries
+- Real-time updates automatically handled by Convex
+- Combine text search with geographical bounds
+- Client-side distance calculation for sorting
 
-## Unknowns resolved (from spec)
-- Claim verification method: Email link to business-domain; 48h manual fallback SLA.
-- Featured pricing model & placement: Monthly per listing; top-of-list; cap 2/page.
-- Reviews policy: 1–5 stars; logged-in; report abuse; owner replies; sort recent.
-- Saved data scope: Favorites only.
-- Ranking & latency: Relevance + distance + open-now boost; P95 ≤ 800 ms.
-- Analytics KPIs: time-to-first-result, contact CTR, approvals/day.
-- Retention/SLA: As above.
+**Search Strategy**:
+- Primary index: `byLocationBounds` on lat/lng ranges
+- Secondary indexes: `byCategory`, `byStatus`, `byName`
+- Client-side Haversine distance calculation
+- Debounced search with 300ms delay
 
-## Open considerations (tracked for design)
-- Geospatial queries in Convex: Use geohash (or grid) prefix fields to index approximate location buckets for bounding-box searches; fetch small candidate set and refine client-side.
-- Mapbox Token Security: Restrict public token by domain; consider server-proxy for heavy geocoding later.
+### 4. Image Upload and Management
 
-## Summary
-All NEEDS CLARIFICATION items resolved; decisions align with Constitution (KISS, vertical slices, tokens, TS, Convex validators) and project stack.
+**Decision**: Convex file storage with client-side resizing
+**Rationale**:
+- Convex provides built-in file storage
+- Client-side resizing reduces bandwidth and storage costs
+- Automatic CDN distribution
+- Integrated with authentication system
 
+**Implementation**:
+- Browser-based image resizing using Canvas API
+- Multiple size variants (thumbnail, medium, full)
+- Upload progress indicators
+- Image validation (type, size, dimensions)
 
+### 5. Real-time Clustering and Performance
+
+**Decision**: Client-side clustering with Mapbox Supercluster
+**Rationale**:
+- Mapbox native clustering for optimal performance
+- Reduces API calls by clustering on client
+- Smooth zoom transitions
+- Configurable cluster radius and zoom levels
+
+**Performance Optimizations**:
+- Viewport-based data loading
+- Debounced map move events
+- Clustering with zoom-dependent radius
+- Virtual scrolling for list view
+
+### 6. Authentication and Authorization
+
+**Decision**: Extend existing Clerk setup with custom roles
+**Rationale**:
+- Leverage existing Clerk authentication
+- Add custom metadata for user roles (visitor, owner, admin)
+- Convex authorization using Clerk JWT claims
+- Role-based UI and API access control
+
+**Role Structure**:
+- `visitor`: Browse and search (no auth required)
+- `owner`: Manage own listings (authenticated)
+- `admin`: Approve listings, manage categories (custom role)
+
+### 7. Moderation Workflow
+
+**Decision**: Status-based workflow with Convex mutations
+**Rationale**:
+- Simple state machine: pending → approved/rejected
+- Real-time status updates for owners
+- Admin queue with filtering and bulk actions
+- Audit trail for moderation decisions
+
+**States**: `pending`, `approved`, `rejected`, `archived`
+**Transitions**: Owner submit → pending, Admin approve/reject, Owner edit → pending (if previously approved)
+
+## Technical Decisions Summary
+
+| Component | Technology | Justification |
+|-----------|------------|---------------|
+| Mapping | Mapbox GL JS v3.x | Performance, mobile support, clustering |
+| Geocoding | Mapbox Geocoding API | Consistency with mapping, address validation |
+| Spatial Search | Convex + bounding box queries | Real-time updates, existing stack integration |
+| Image Storage | Convex file storage | Built-in CDN, authentication integration |
+| Clustering | Mapbox Supercluster | Native performance, smooth interactions |
+| Authentication | Clerk + custom roles | Extends existing setup, role-based access |
+| State Management | Convex queries/mutations | Real-time updates, consistent with stack |
+
+## Dependencies to Add
+
+```json
+{
+  "mapbox-gl": "^3.0.1",
+  "@types/mapbox-gl": "^3.0.0",
+  "supercluster": "^8.0.1",
+  "@types/supercluster": "^7.1.3"
+}
+```
+
+## Environment Variables Required
+
+```env
+NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN=pk_...
+```
+
+## Risks and Mitigations
+
+| Risk | Impact | Mitigation |
+|------|--------|------------|
+| Mapbox API costs | Medium | Implement request caching, optimize API calls |
+| Large dataset performance | High | Viewport-based loading, clustering, pagination |
+| Mobile map performance | Medium | Optimize touch handlers, reduce DOM updates |
+| Geolocation privacy | Low | Clear permissions UI, manual fallback |
+
+## Next Phase Requirements
+
+All technical unknowns resolved. Ready for Phase 1 design phase with:
+- Clear technology choices
+- Performance strategy defined
+- Integration approach established
+- Risk mitigation planned

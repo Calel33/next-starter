@@ -177,6 +177,16 @@ Build a local business directory MVP with Mapbox GL JS integration, real-time se
 - [ ] T088 Validate all contract tests pass with implemented functions
 - [ ] T089 Update documentation and deployment configuration
 
+## Phase 3.11: Privacy & Legal Compliance
+
+### Privacy Implementation (Sequential - Legal Requirements)
+- [ ] T090 Create privacy policy page in `app/privacy/page.tsx` with comprehensive data handling disclosure
+- [ ] T091 Create terms of service page in `app/terms/page.tsx` with usage guidelines and liability
+- [ ] T092 Implement cookie consent banner in `components/custom/CookieConsent.tsx` with granular controls
+- [ ] T093 Add privacy/terms links to footer in existing layout components
+- [ ] T094 [P] Create data export functionality in owner dashboard for GDPR compliance
+- [ ] T095 [P] Create account deletion functionality with data purge in user settings
+
 ## Dependencies
 
 ### Critical Path
@@ -191,6 +201,7 @@ Build a local business directory MVP with Mapbox GL JS integration, real-time se
 - T024-T026 block T027-T030 (search needs map integration)
 - T050-T052 block T053-T055 (auth setup before protection)
 - T016-T021 block T056-T058 (backend before real-time)
+- T090-T093 can run parallel with other frontend tasks (T043-T046)
 
 ### Parallel Execution Groups
 ```bash
@@ -238,12 +249,13 @@ T081 & T082 & T083 & T084
 ## Success Criteria
 
 ### MVP Complete When:
-1. **All 89 tasks completed** with passing tests
+1. **All 95 tasks completed** with passing tests (updated from 89)
 2. **5 core user flows working** end-to-end (from quickstart.md)
 3. **Performance benchmarks met**: <800ms search, 60fps map interactions
 4. **Security validated**: Authentication, authorization, input validation
 5. **Mobile optimized**: Touch gestures, responsive design, performance
 6. **Accessibility compliant**: ARIA labels, keyboard navigation, screen readers
+7. **Legal compliance**: Privacy policy, terms of service, cookie consent implemented
 
 ### Key Metrics to Achieve:
 - Search success rate > 95% (non-zero results)

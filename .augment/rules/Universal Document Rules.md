@@ -1,5 +1,6 @@
 ---
-type: "always_apply"
+type: "agent_requested"
+description: "Universal Document Rules"
 ---
 
 # 📋 Universal Document Rules - Concise Version

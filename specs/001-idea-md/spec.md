@@ -95,14 +95,16 @@ As an admin, I want to efficiently review incoming listings, approve or reject t
 - **FR-014**: Public endpoints MUST be protected with basic rate limiting to deter abuse.
 - **FR-015**: The system MUST provide privacy basics (cookie consent links, privacy/terms pages available from footer).
 
-*Deferred items (clarified):*
-- **FR-016**: System SHOULD support listing claiming & verification via email link to a business-domain address, with manual admin fallback; manual review SLA 48 hours.
-- **FR-017**: System SHOULD support featured/paid listings using a monthly per-listing plan; placement pinned to top of list with a cap of 2 per page; rotate by created_at when more than 2; refunds not prorated.
-- **FR-018**: System SHOULD support reviews & ratings using a 1–5 star scale; reviewers must be logged-in; post-moderation with report abuse; owners may post responses; default sort by recent.
-- **FR-019**: System SHOULD support visitor saved lists/accounts using magic-link sign-in; save Favorites only; cross-device sync; inactive accounts purged after 24 months.
-- **FR-020**: Advanced search/ranking uses relevance plus distance with an "open now" boost; target P95 latency ≤ 800 ms.
-- **FR-021**: Analytics events include listing_view, search_query, contact_click, directions_click; track KPIs: time-to-first-result, contact CTR, approvals/day; retain aggregate data for 12 months.
-- **FR-022**: Data retention/deletion: archived listings and images retained 24 months; user data export/delete requests fulfilled within 30 days; backups/logs retained 90 days.
+*Deferred items (future scope):*
+- **FR-016**: System SHOULD support listing claiming & verification via business email validation
+- **FR-017**: System SHOULD support featured/paid listings with premium placement options
+- **FR-018**: System SHOULD support reviews & ratings with moderation capabilities
+- **FR-019**: System SHOULD support visitor saved lists/accounts with cross-device sync
+- **FR-020**: Advanced search/ranking SHOULD use relevance algorithms with performance targets
+- **FR-021**: Analytics SHOULD track detailed user interactions and business KPIs
+- **FR-022**: Data retention/deletion SHOULD follow privacy compliance standards
+
+*Note: Implementation details for deferred features are documented in plan.md*
 
 ### Key Entities (include if feature involves data)
 - **Listing**: A business entry discoverable by visitors. Key attributes: id, owner_id, name, slug, description, categories, address, location (lat/lng), phone, website, hours, images[], status (pending/approved/rejected/archived), created_at, updated_at, views, clicks (phone, website).

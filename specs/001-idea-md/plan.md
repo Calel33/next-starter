@@ -70,6 +70,48 @@
 - **New Dependency**: Adding Mapbox GL JS - justified for core mapping functionality requirement
 - **External API**: Mapbox services integration - requires API key management and error handling
 
+## Deferred Features Implementation Details
+*Moved from spec.md to maintain separation of concerns*
+
+### FR-016 Implementation Details:
+- Email link verification to business-domain address
+- Manual admin fallback process
+- 48-hour manual review SLA
+
+### FR-017 Implementation Details:
+- Monthly per-listing pricing plan
+- Top placement with 2 per page cap
+- Rotation by created_at when >2 featured
+- No prorated refunds policy
+
+### FR-018 Implementation Details:
+- 1-5 star rating scale
+- Logged-in reviewers required
+- Post-moderation with abuse reporting
+- Owner response capability
+- Default sort by recent
+
+### FR-019 Implementation Details:
+- Magic-link sign-in authentication
+- Favorites-only saving capability
+- Cross-device synchronization
+- 24-month inactive account purge
+
+### FR-020 Implementation Details:
+- Relevance + distance algorithm
+- "Open now" boost factor
+- P95 latency ≤ 800ms target
+
+### FR-021 Implementation Details:
+- Events: listing_view, search_query, contact_click, directions_click
+- KPIs: time-to-first-result, contact CTR, approvals/day
+- 12-month aggregate data retention
+
+### FR-022 Implementation Details:
+- 24-month retention for archived listings/images
+- 30-day user data export/delete fulfillment
+- 90-day backup/log retention
+
 ## Project Structure
 
 ### Documentation (this feature)
@@ -187,6 +229,7 @@ ios/ or android/
 - Frontend component tasks: Map interface, search UI, listing forms, admin panels
 - Integration tasks: Mapbox setup, Clerk role management, image processing
 - Testing tasks: Contract tests, integration tests, mobile responsiveness
+- Privacy/legal tasks: GDPR compliance, cookie consent, terms/privacy pages
 
 **Ordering Strategy**:
 1. **Foundation** (can be parallel): Schema, environment setup, dependencies
@@ -201,12 +244,19 @@ ios/ or android/
 - **[S]** Sequential (depends on previous tasks)
 - **[T]** Testing (can be parallel with implementation)
 
-**Estimated Output**: 35-40 numbered, ordered tasks covering:
-- 8 database/schema tasks
-- 12 backend function tasks  
-- 10 frontend component tasks
-- 6 integration/setup tasks
-- 4 testing/validation tasks
+**Estimated Output**: 95 numbered, ordered tasks covering:
+- 4 setup/dependency tasks
+- 11 testing tasks (5 contract + 5 integration + 1 schema)
+- 8 backend function tasks
+- 16 frontend component tasks
+- 12 dashboard page tasks
+- 8 public page tasks
+- 6 authentication/authorization tasks
+- 9 real-time/performance tasks
+- 8 mobile/accessibility tasks
+- 7 analytics/security tasks
+- 6 privacy/legal compliance tasks
+- 5 final validation tasks
 
 **IMPORTANT**: This phase is executed by the /tasks command, NOT by /plan
 

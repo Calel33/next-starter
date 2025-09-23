@@ -1,7 +1,8 @@
 ---
-type: "always_apply"
+type: "agent_requested"
 description: "Example description"
 ---
+
 # 🤖 Agent Mode System
 
 ## Core Rule

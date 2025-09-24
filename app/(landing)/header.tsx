@@ -16,6 +16,7 @@ import { useTheme } from "next-themes"
 
 
 const menuItems = [
+    { name: 'Directory', href: '/directory' },
     { name: 'Features', href: '#link' },
     { name: 'Solution', href: '#link' },
     { name: 'Pricing', href: '#link' },
@@ -27,9 +28,9 @@ export const HeroHeader = () => {
     const [isScrolled, setIsScrolled] = React.useState(false)
     const { theme } = useTheme()
 
-    const appearance = {
+    const appearance = React.useMemo(() => ({
         baseTheme: theme === "dark" ? dark : undefined,
-    }
+    }), [theme])
 
     React.useEffect(() => {
         const handleScroll = () => {

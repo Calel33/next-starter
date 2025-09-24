@@ -1,5 +1,5 @@
 'use client'
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useMemo } from "react";
 import { JSX } from "react";
 
 class Pixel {
@@ -194,11 +194,11 @@ export default function PixelCard({
       : false
   ).current;
 
-  const variantCfg: VariantConfig = VARIANTS[variant] || VARIANTS.default;
-  const finalGap = gap ?? variantCfg.gap;
-  const finalSpeed = speed ?? variantCfg.speed;
-  const finalColors = colors ?? variantCfg.colors;
-  const finalNoFocus = noFocus ?? variantCfg.noFocus;
+  const variantCfg: VariantConfig = useMemo(() => VARIANTS[variant] || VARIANTS.default, [variant]);
+  const finalGap = useMemo(() => gap ?? variantCfg.gap, [gap, variantCfg.gap]);
+  const finalSpeed = useMemo(() => speed ?? variantCfg.speed, [speed, variantCfg.speed]);
+  const finalColors = useMemo(() => colors ?? variantCfg.colors, [colors, variantCfg.colors]);
+  const finalNoFocus = useMemo(() => noFocus ?? variantCfg.noFocus, [noFocus, variantCfg.noFocus]);
 
   const initPixels = () => {
     if (!containerRef.current || !canvasRef.current) return;

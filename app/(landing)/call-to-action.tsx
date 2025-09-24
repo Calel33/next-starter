@@ -32,7 +32,7 @@ export default function CallToAction() {
                 </div>
                 </PixelCard>
             </div>
-            
+
         </section>
     )
 }

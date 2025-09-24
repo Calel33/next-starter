@@ -18,6 +18,7 @@ import {
 import { useClerk, useUser } from "@clerk/nextjs"
 import { dark } from '@clerk/themes'
 import { useTheme } from "next-themes"
+import { useMemo } from "react"
 
 export function NavUser() {
   const { isMobile } = useSidebar()
@@ -25,9 +26,9 @@ export function NavUser() {
   const { theme } = useTheme()
   const { user: clerkUser } = useUser();
 
-  const appearance = {
+  const appearance = useMemo(() => ({
     baseTheme: theme === "dark" ? dark : undefined,
-  }
+  }), [theme])
 
   return (
     <SidebarMenu>
@@ -35,9 +36,7 @@ export function NavUser() {
             <SidebarMenuButton
               size="lg"
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
-              onClick={() => openUserProfile({ appearance: {
-                baseTheme: theme === "dark" ? dark : undefined,
-              } })}
+              onClick={() => openUserProfile({ appearance })}
             >
               <Avatar className="h-8 w-8 rounded-lg grayscale">
                 <AvatarImage src={clerkUser?.imageUrl || ""} alt={clerkUser?.fullName || ""} />

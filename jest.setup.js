@@ -1,0 +1,89 @@
+import '@testing-library/jest-dom'
+
+// Mock Next.js router
+jest.mock('next/navigation', () => ({
+  useRouter() {
+    return {
+      push: jest.fn(),
+      replace: jest.fn(),
+      prefetch: jest.fn(),
+      back: jest.fn(),
+      forward: jest.fn(),
+      refresh: jest.fn(),
+    }
+  },
+  useSearchParams() {
+    return new URLSearchParams()
+  },
+  usePathname() {
+    return '/'
+  },
+}))
+
+// Mock Convex
+jest.mock('convex/react', () => ({
+  useQuery: jest.fn(),
+  useMutation: jest.fn(),
+  useAction: jest.fn(),
+  ConvexProvider: ({ children }) => children,
+}))
+
+// Mock Clerk
+jest.mock('@clerk/nextjs', () => ({
+  useUser: jest.fn(() => ({
+    user: null,
+    isLoaded: true,
+    isSignedIn: false,
+  })),
+  useAuth: jest.fn(() => ({
+    isLoaded: true,
+    isSignedIn: false,
+    signOut: jest.fn(),
+  })),
+  SignIn: ({ children }) => children,
+  SignUp: ({ children }) => children,
+  ClerkProvider: ({ children }) => children,
+}))
+
+// Mock window.matchMedia
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: jest.fn().mockImplementation(query => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: jest.fn(), // deprecated
+    removeListener: jest.fn(), // deprecated
+    addEventListener: jest.fn(),
+    removeEventListener: jest.fn(),
+    dispatchEvent: jest.fn(),
+  })),
+})
+
+// Mock IntersectionObserver
+global.IntersectionObserver = class IntersectionObserver {
+  constructor() {}
+  observe() {
+    return null
+  }
+  disconnect() {
+    return null
+  }
+  unobserve() {
+    return null
+  }
+}
+
+// Mock ResizeObserver
+global.ResizeObserver = class ResizeObserver {
+  constructor() {}
+  observe() {
+    return null
+  }
+  disconnect() {
+    return null
+  }
+  unobserve() {
+    return null
+  }
+}

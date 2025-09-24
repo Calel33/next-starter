@@ -2,6 +2,7 @@
 
 import { cn } from "@/lib/utils";
 import { AnimatedList } from "@/components/magicui/animated-list";
+import { useMemo } from "react";
 
 interface Item {
   name: string;
@@ -87,6 +88,12 @@ export function AnimatedListCustom({
 }: {
   className?: string;
 }) {
+  const notificationComponents = useMemo(() =>
+    notifications.map((item, idx) => (
+      <Notification {...item} key={idx} />
+    )), []
+  );
+
   return (
     <div
       className={cn(
@@ -95,9 +102,7 @@ export function AnimatedListCustom({
       )}
     >
       <AnimatedList>
-        {notifications.map((item, idx) => (
-          <Notification {...item} key={idx} />
-        ))}
+        {notificationComponents}
       </AnimatedList>
 
       <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-background"></div>

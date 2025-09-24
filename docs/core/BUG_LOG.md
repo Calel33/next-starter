@@ -4,8 +4,8 @@
 
 This document tracks known issues, bugs, and their resolution status for the Elite Next.js SaaS Starter Kit.
 
-**Last Updated**: September 17, 2025  
-**Status**: Active Monitoring  
+**Last Updated**: September 24, 2025
+**Status**: Active Monitoring
 
 ## 🚨 Critical Issues
 
@@ -137,6 +137,91 @@ Development experience only, no production impact.
 
 ## ✅ Resolved Issues
 
+### [BUG-007] React Infinite Re-render Loop on Directory Page
+**Status**: ✅ Resolved
+**Severity**: Critical
+**Reported**: September 24, 2025
+**Resolved**: September 24, 2025
+**Reporter**: User Report
+
+**Description**:
+Critical infinite re-render loop causing "Maximum update depth exceeded" error on the directory page and some landing page components. The error was preventing normal application usage and causing browser performance issues.
+
+**Error Message**:
+```
+Maximum update depth exceeded. This can happen when a component calls setState inside useEffect, but useEffect either doesn't have a dependency array, or one of the dependencies changes on every render.
+```
+
+**Affected Components**:
+- `app/directory/page.tsx` - Main directory page
+- `hooks/useBusinessSearch.ts` - Business search hook
+- `components/custom/SearchInterface.tsx` - Search interface component
+- `app/(landing)/animated-list-custom.tsx` - Animated list component
+- `components/react-bits/pixel-card.tsx` - Pixel card animation
+- `components/kokonutui/attract-button.tsx` - Interactive button
+- `app/dashboard/chart-area-interactive.tsx` - Interactive chart
+- `app/(landing)/header.tsx` - Landing page header
+- `components/custom-clerk-pricing.tsx` - Pricing component
+- `app/dashboard/nav-user.tsx` - Navigation user component
+
+**Root Causes Identified**:
+1. **Object Recreation on Every Render**: Components creating new objects, arrays, or functions on every render without memoization
+2. **Unstable useEffect Dependencies**: Using entire objects as dependencies instead of specific properties
+3. **Cascading Re-renders**: One component's re-render triggering another component's re-render in a cycle
+4. **Non-memoized React Elements**: Creating React elements in render without memoization
+
+**Specific Technical Issues**:
+- `useBusinessSearch`: `searchArgs` using `boundsKey` instead of `searchFilters.bounds` in dependencies
+- `SearchInterface`: `useEffect` with entire `filters` object as dependency
+- `AnimatedListCustom`: `notifications.map()` creating new React elements on every render
+- `DirectoryPage`: `initialFilters` and `mapMarkers` objects recreated on every render
+- Multiple Clerk components: Appearance objects created inline without memoization
+
+**Steps to Reproduce**:
+1. Navigate to `/directory` page
+2. Observe browser console for error messages
+3. Notice application becomes unresponsive
+4. Error: "Maximum update depth exceeded"
+
+**Expected Behavior**:
+Directory page should load normally without infinite re-renders and maintain stable performance.
+
+**Resolution Applied**:
+1. **Memoized Object Creation**: Used `useMemo` for objects created in render
+2. **Fixed useEffect Dependencies**: Replaced object dependencies with specific properties
+3. **Memoized React Elements**: Used `useMemo` for dynamically created React elements
+4. **Stabilized Function References**: Used `useCallback` where appropriate
+5. **Conditional State Updates**: Added checks before calling `setState` to prevent unnecessary updates
+
+**Files Modified**:
+- `hooks/useBusinessSearch.ts` - Fixed dependency arrays and object references
+- `app/directory/page.tsx` - Memoized `initialFilters` and `mapMarkers`
+- `components/custom/SearchInterface.tsx` - Fixed `useEffect` dependencies
+- `app/(landing)/animated-list-custom.tsx` - Memoized notification components
+- `components/react-bits/pixel-card.tsx` - Memoized computed values
+- `components/kokonutui/attract-button.tsx` - Used refs instead of state dependencies
+- `app/dashboard/chart-area-interactive.tsx` - Added conditional state updates
+- `app/(landing)/header.tsx` - Memoized Clerk appearance object
+- `components/custom-clerk-pricing.tsx` - Memoized complex appearance object
+- `app/dashboard/nav-user.tsx` - Memoized appearance object
+
+**Testing Results**:
+- ✅ Development server starts successfully
+- ✅ Landing page loads without errors
+- ✅ Directory page loads without errors
+- ✅ No "Maximum update depth exceeded" errors
+- ✅ All interactive features work properly
+- ✅ Performance is stable and responsive
+
+**Prevention Measures Added**:
+- Code review checklist for memoization patterns
+- Documentation of common infinite re-render causes
+- Guidelines for proper `useEffect` dependency management
+
+**Resolution Commit**: Multiple commits addressing each component systematically
+
+---
+
 ### [BUG-005] Build Errors with TypeScript Strict Mode
 **Status**: ✅ Resolved  
 **Severity**: High  
@@ -224,20 +309,20 @@ Use this template when reporting new bugs:
 - **Medium Priority**: 2
 - **Low Priority**: 2
 - **Total Open**: 4
-- **Resolved This Month**: 2
+- **Resolved This Month**: 3
 
 ### Bug Categories
 | Category | Open | Resolved | Total |
 |----------|------|----------|-------|
 | UI/UX | 3 | 1 | 4 |
 | Authentication | 0 | 1 | 1 |
-| Performance | 0 | 0 | 0 |
+| Performance | 0 | 1 | 1 |
 | Build/Deploy | 0 | 1 | 1 |
-| **Total** | **3** | **2** | **5** |
+| **Total** | **3** | **4** | **7** |
 
 ### Resolution Time Metrics
-- **Average Resolution Time**: 1.5 days
-- **Critical Issues**: N/A (none reported)
+- **Average Resolution Time**: 1.3 days
+- **Critical Issues**: Same day (1 resolved)
 - **High Priority**: 1 day average
 - **Medium Priority**: 2 days average
 - **Low Priority**: TBD

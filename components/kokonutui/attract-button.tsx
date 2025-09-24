@@ -13,7 +13,7 @@
 import { cn } from "@/lib/utils";
 import { motion, useAnimation } from "motion/react";
 import { Magnet } from "lucide-react";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { Button } from "@/components/ui/button";
 
 interface AttractButtonProps
@@ -36,6 +36,7 @@ export default function AttractButton({
 }: AttractButtonProps) {
     const [isAttracting, setIsAttracting] = useState(false);
     const [particles, setParticles] = useState<Particle[]>([]);
+    const particlesRef = useRef<Particle[]>([]);
     const particlesControl = useAnimation();
 
     useEffect(() => {
@@ -45,6 +46,7 @@ export default function AttractButton({
             y: Math.random() * 360 - 180,
         }));
         setParticles(newParticles);
+        particlesRef.current = newParticles;
     }, [particleCount]);
 
     const handleInteractionStart = useCallback(async () => {
@@ -63,15 +65,15 @@ export default function AttractButton({
     const handleInteractionEnd = useCallback(async () => {
         setIsAttracting(false);
         await particlesControl.start((i) => ({
-            x: particles[i].x,
-            y: particles[i].y,
+            x: particlesRef.current[i]?.x || Math.random() * 360 - 180,
+            y: particlesRef.current[i]?.y || Math.random() * 360 - 180,
             transition: {
                 type: "spring",
                 stiffness: 100,
                 damping: 15,
             },
         }));
-    }, [particlesControl, particles]);
+    }, [particlesControl]);
 
     return (
         <Button

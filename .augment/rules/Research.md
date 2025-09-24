@@ -1,5 +1,5 @@
 ---
-type: "agent_requested"
+type: "always_apply"
 description: "Task research"
 ---
 
@@ -30,17 +30,17 @@ Enable agents to dynamically determine when research is needed and how deep to g
 #### Level 1: Quick Reference (5-10 minutes)
 **When:** Simple implementation questions
 **Deliverables:** `IMPLEMENTATION_GUIDE.md` + `CODE_EXAMPLES.md`
-**Tools:** Local codebase search, basic documentation
+**Tools:** Local codebase search, All available MCP tools
 
 #### Level 2: Pattern Research (15-30 minutes)
 **When:** Need implementation patterns or best practices
 **Deliverables:** `IMPLEMENTATION_GUIDE.md` + `CODE_EXAMPLES.md` + `INTEGRATION_NOTES.md`
-**Tools:** Archon MCP, DeepWiki MCP, web search
+**Tools:** Local codebase search, All available MCP tools
 
 #### Level 3: Comprehensive Research (30-60 minutes)
 **When:** Complex features, architectural decisions, or security-critical tasks
 **Deliverables:** All Level 2 + `SECURITY_PERFORMANCE_NOTES.md` + `TEST_STRATEGY.md` + `RISKS_AND_MITIGATIONS.md`
-**Tools:** All available MCP tools, comprehensive documentation
+**Tools:**  Local codebase search, All available MCP tools, 
 
 ### Decision Matrix
 
@@ -145,3 +145,6 @@ Before starting any task, ask:
 
 **Goal:** Ensure research produces actionable deliverables that directly enable task completion
 **Outcome:** Faster simple tasks, thorough complex implementations, implementation-ready research
+#override
+**Ignore **Research is NOT needed when:** 
+**Research is NOT needed: treat as level1

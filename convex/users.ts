@@ -1,6 +1,7 @@
 import { internalMutation, mutation, query, QueryCtx } from "./_generated/server";
 import { UserJSON } from "@clerk/backend";
 import { v, Validator } from "convex/values";
+import { clerkClient } from "@clerk/backend";
 
 export const current = query({
   args: {},
@@ -30,6 +31,22 @@ export const upsertFromClerk = internalMutation({
       };
 
       await ctx.db.insert("users", newUserAttributes);
+
+      // Sync role to Clerk's publicMetadata for middleware access
+      // Only sync if role is different from what's already in Clerk
+      if (data.public_metadata?.role !== role) {
+        try {
+          await clerkClient.users.updateUserMetadata(data.id, {
+            publicMetadata: {
+              ...data.public_metadata,
+              role: role,
+            }
+          });
+        } catch (error) {
+          console.error('Failed to sync initial role to Clerk:', error);
+          // Don't fail user creation if Clerk sync fails
+        }
+      }
     } else {
       // Existing user - update basic info but preserve role and other data
       const updateAttributes = {
@@ -80,7 +97,8 @@ export async function getCurrentUser(ctx: QueryCtx) {
 
 // Determine user role based on signup context and metadata
 function determineUserRole(userData: UserJSON): "visitor" | "owner" | "admin" {
-  // Check if user has admin privileges (set manually in Clerk dashboard)
+  // SECURITY: Admin roles can ONLY be assigned manually via Clerk dashboard
+  // Never allow self-assignment of admin role through signup flow
   if (userData.public_metadata?.role === 'admin') {
     return 'admin';
   }
@@ -96,6 +114,7 @@ function determineUserRole(userData: UserJSON): "visitor" | "owner" | "admin" {
   }
 
   // Default to visitor for general signups
+  // Note: Admin role is NEVER assigned here - must be set manually
   return 'visitor';
 }
 
@@ -139,6 +158,18 @@ export const updateUserRole = mutation({
       role: args.newRole,
       verificationStatus: args.newRole === 'admin' ? 'verified' : targetUser.verificationStatus
     });
+
+    // Sync role back to Clerk's publicMetadata for middleware access
+    try {
+      await clerkClient.users.updateUserMetadata(targetUser.externalId, {
+        publicMetadata: {
+          role: args.newRole,
+        }
+      });
+    } catch (error) {
+      console.error('Failed to sync role to Clerk:', error);
+      // Don't fail the operation if Clerk sync fails
+    }
 
     return { success: true, message: `Role updated to ${args.newRole}` };
   },

@@ -1,23 +1,28 @@
-# 🏗️ ARCHITECTURE - Elite Next.js SaaS Starter Kit
+# 🏗️ ARCHITECTURE - Elite Next.js Business Directory Platform
 
 ## 📋 System Overview
 
-The Elite Next.js SaaS Starter Kit follows a modern, serverless architecture pattern with real-time capabilities, type-safe operations, and production-ready integrations.
+The Elite Next.js Business Directory Platform is a comprehensive, production-ready business listing and discovery platform built with modern serverless architecture. It combines real-time data synchronization, geospatial search capabilities, advanced analytics, and content moderation to create a complete business directory solution.
 
 ## 🎯 Architecture Principles
 
 ### Core Principles
-- **Serverless First** - Leverage managed services for scalability
-- **Type Safety** - TypeScript throughout the entire stack
-- **Real-time by Default** - Live data synchronization
+- **Serverless First** - Leverage managed services for infinite scalability
+- **Type Safety** - TypeScript throughout the entire stack with strict validation
+- **Real-time by Default** - Live data synchronization for all user interactions
+- **Geospatial Optimization** - Location-based search and mapping capabilities
+- **Content Moderation** - Built-in approval workflows and quality control
+- **Analytics-Driven** - Comprehensive tracking and business intelligence
 - **Component Composition** - Reusable, modular components
 - **Progressive Enhancement** - Works without JavaScript, better with it
 
 ### Design Patterns
-- **Vertical Slice Architecture** - Features organized by domain
+- **Vertical Slice Architecture** - Features organized by business domain
 - **Composition over Inheritance** - Flexible component patterns
-- **Fail-fast Validation** - Early error detection and handling
+- **Fail-fast Validation** - Early error detection with Zod schemas
 - **Separation of Concerns** - Clear boundaries between layers
+- **Event-Driven Architecture** - Analytics and moderation through events
+- **Optimistic UI Updates** - Immediate feedback with eventual consistency
 
 ## 🏛️ System Architecture
 
@@ -26,32 +31,55 @@ graph TB
     Client[Next.js Client] --> Auth[Clerk Auth]
     Client --> Database[Convex Database]
     Client --> Billing[Clerk Billing]
-    
+    Client --> Maps[Mapbox Maps]
+    Client --> Geocoding[Geocoding Service]
+
     Auth --> Webhooks[Webhook System]
     Billing --> Webhooks
-    
+
     Webhooks --> Database
-    
+
     Database --> Functions[Convex Functions]
     Functions --> Client
-    
+    Functions --> Analytics[Analytics Engine]
+    Functions --> Moderation[Content Moderation]
+    Functions --> Search[Geospatial Search]
+
     subgraph "Frontend Layer"
         Client
         UI[shadcn/ui Components]
         Theme[Theme Provider]
         Router[App Router]
+        MapUI[Map Interface]
+        SearchUI[Search Interface]
+        FilterUI[Filter Panel]
     end
-    
+
     subgraph "Backend Layer"
         Database
         Functions
         Schema[Database Schema]
+        Analytics
+        Moderation
+        Search
+        ImageStorage[Image Storage]
     end
-    
+
     subgraph "External Services"
         Auth
         Billing
         Webhooks
+        Maps
+        Geocoding
+    end
+
+    subgraph "Data Layer"
+        Listings[Business Listings]
+        Categories[Category System]
+        Users[User Management]
+        Images[Image Assets]
+        Events[Analytics Events]
+        Logs[Moderation Logs]
     end
 ```
 
@@ -64,10 +92,15 @@ graph TB
 // App Router Structure
 app/
 ├── (landing)/          // Landing page group
-├── dashboard/          // Protected dashboard
-├── globals.css         // Global styles
-├── layout.tsx          // Root layout
-└── not-found.tsx       // Error handling
+├── dashboard/          // Protected dashboard with admin/owner views
+├── directory/          // Business directory public interface
+│   ├── page.tsx        // Main directory search page
+│   ├── category/       // Category-based browsing
+│   ├── listing/        // Individual business pages
+│   └── search/         // Advanced search interface
+├── globals.css         // Global styles with design system
+├── layout.tsx          // Root layout with providers
+└── not-found.tsx       // Custom 404 page
 ```
 
 #### Component Architecture
@@ -75,32 +108,137 @@ app/
 // Component Hierarchy
 components/
 ├── ui/                 // Base UI components (shadcn/ui)
-├── custom/             // Custom business components
-├── providers/          // Context providers
-└── layouts/            // Layout components
+├── custom/             // Business-specific components
+│   ├── SearchInterface.tsx     // Advanced search with filters
+│   ├── MapboxMap.tsx          // Interactive map component
+│   ├── SearchResults.tsx      // Business listing results
+│   ├── FilterPanel.tsx        // Category and location filters
+│   ├── BusinessCard.tsx       // Individual business display
+│   └── AnalyticsDashboard.tsx // Admin analytics interface
+├── kokonutui/          // Enhanced UI components
+├── magicui/            // Animation components
+├── motion-primitives/  // Advanced animations
+└── react-bits/         // Custom animation components
 ```
 
 #### State Management Pattern
-- **Server State**: Convex real-time queries
-- **Client State**: React state and context
+- **Server State**: Convex real-time queries with optimistic updates
+- **Client State**: React state and context for UI interactions
+- **Search State**: Custom hooks for search filters and results
+- **Map State**: Mapbox GL state management for geospatial data
 - **Form State**: React Hook Form with Zod validation
-- **Theme State**: next-themes provider
+- **Theme State**: next-themes provider with design system tokens
 
 ### Backend Architecture
 
 #### Convex Database Schema
 ```typescript
-// Database Tables
+// Comprehensive Business Directory Schema
 export default defineSchema({
+  // User Management with Business Roles
   users: defineTable({
     name: v.string(),
     externalId: v.string(), // Clerk ID
-  }).index("byExternalId", ["externalId"]),
-  
+    role: v.optional(v.union(v.literal("visitor"), v.literal("owner"), v.literal("admin"))),
+    email: v.optional(v.string()),
+    businessName: v.optional(v.string()),
+    verificationStatus: v.optional(v.union(v.literal("pending"), v.literal("verified"), v.literal("rejected"))),
+    defaultLocation: v.optional(locationValidator),
+    listingCount: v.optional(v.number()),
+  }).index("byExternalId", ["externalId"])
+    .index("byRole", ["role"])
+    .index("byVerificationStatus", ["verificationStatus"]),
+
+  // Business Listings with Geospatial Data
+  listings: defineTable({
+    name: v.string(),
+    slug: v.string(),
+    description: v.optional(v.string()),
+    phone: v.optional(v.string()),
+    website: v.optional(v.string()),
+    email: v.optional(v.string()),
+    address: addressValidator,
+    location: locationValidator, // Lat/lng for geospatial queries
+    categories: v.array(v.id("categories")),
+    hours: v.optional(businessHoursValidator),
+    images: v.array(v.id("imageAssets")),
+    ownerId: v.optional(v.id("users")),
+    status: v.union(v.literal("pending"), v.literal("approved"), v.literal("rejected"), v.literal("archived")),
+    views: v.number(),
+    phoneClicks: v.number(),
+    websiteClicks: v.number(),
+    directionsClicks: v.number(),
+  }).index("byStatus", ["status"])
+    .index("byOwner", ["ownerId"])
+    .index("byLocationBounds", ["location.lat", "location.lng"])
+    .index("byCategory", ["categories"])
+    .index("bySlug", ["slug"]),
+
+  // Category Hierarchy System
+  categories: defineTable({
+    name: v.string(),
+    slug: v.string(),
+    description: v.optional(v.string()),
+    parentId: v.optional(v.id("categories")),
+    isActive: v.boolean(),
+    sortOrder: v.number(),
+    listingCount: v.number(),
+  }).index("byParent", ["parentId"])
+    .index("byActive", ["isActive"]),
+
+  // Image Asset Management
+  imageAssets: defineTable({
+    storageId: v.id("_storage"),
+    filename: v.string(),
+    contentType: v.string(),
+    variants: v.object({
+      thumbnail: v.id("_storage"),
+      medium: v.id("_storage"),
+      full: v.id("_storage"),
+    }),
+    uploadedBy: v.id("users"),
+    listingId: v.optional(v.id("listings")),
+    moderationStatus: v.union(v.literal("pending"), v.literal("approved"), v.literal("rejected")),
+  }).index("byListing", ["listingId"])
+    .index("byModerationStatus", ["moderationStatus"]),
+
+  // Analytics and Event Tracking
+  analyticsEvents: defineTable({
+    type: v.union(
+      v.literal("listing_view"),
+      v.literal("search_query"),
+      v.literal("contact_click"),
+      v.literal("directions_click"),
+      v.literal("map_interaction")
+    ),
+    listingId: v.optional(v.id("listings")),
+    userId: v.optional(v.id("users")),
+    sessionId: v.string(),
+    metadata: v.object({
+      query: v.optional(v.string()),
+      location: v.optional(locationValidator),
+      contactType: v.optional(v.string()),
+      userAgent: v.optional(v.string()),
+    }),
+    retentionDate: v.number(),
+  }).index("byType", ["type"])
+    .index("byListing", ["listingId"]),
+
+  // Content Moderation System
+  moderationLogs: defineTable({
+    action: v.union(v.literal("approve"), v.literal("reject"), v.literal("archive")),
+    entityType: v.union(v.literal("listing"), v.literal("image"), v.literal("user")),
+    entityId: v.string(),
+    moderatorId: v.id("users"),
+    reason: v.optional(v.string()),
+    automated: v.boolean(),
+  }).index("byEntity", ["entityType", "entityId"])
+    .index("byModerator", ["moderatorId"]),
+
+  // Payment System (Existing)
   paymentAttempts: defineTable(paymentAttemptSchemaValidator)
     .index("byPaymentId", ["payment_id"])
-    .index("byUserId", ["userId"])
-    .index("byPayerUserId", ["payer.user_id"]),
+    .index("byUserId", ["userId"]),
 });
 ```
 
@@ -108,11 +246,16 @@ export default defineSchema({
 ```typescript
 // Convex Functions Structure
 convex/
-├── schema.ts           // Database schema
-├── users.ts            // User management functions
-├── paymentAttempts.ts  // Payment tracking
+├── schema.ts           // Comprehensive database schema
+├── users.ts            // User management with roles
+├── listings.ts         // Business listing CRUD operations
+├── categories.ts       // Category management system
+├── images.ts           // Image upload and processing
+├── analytics.ts        // Event tracking and reporting
+├── moderationLogs.ts   // Content moderation system
+├── paymentAttempts.ts  // Payment tracking (existing)
 ├── http.ts             // Webhook handlers
-└── auth.config.ts      // Authentication config
+└── auth.config.ts      // Authentication configuration
 ```
 
 ### Authentication Flow
@@ -123,14 +266,54 @@ sequenceDiagram
     participant NextJS
     participant Clerk
     participant Convex
-    
+
     User->>NextJS: Access protected route
     NextJS->>Clerk: Check authentication
-    Clerk->>NextJS: Return JWT token
+    Clerk->>NextJS: Return JWT token with role
     NextJS->>Convex: Query with auth context
-    Convex->>Convex: Validate JWT
-    Convex->>NextJS: Return authorized data
-    NextJS->>User: Render protected content
+    Convex->>Convex: Validate JWT and check permissions
+    Convex->>NextJS: Return role-based authorized data
+    NextJS->>User: Render content based on user role
+```
+
+### Business Directory Search Flow
+
+```mermaid
+sequenceDiagram
+    participant User
+    participant SearchUI
+    participant Convex
+    participant Analytics
+    participant MapBox
+
+    User->>SearchUI: Enter search query
+    SearchUI->>Convex: Search with filters and location
+    Convex->>Convex: Geospatial query with indexes
+    Convex->>SearchUI: Return filtered results
+    SearchUI->>MapBox: Display markers on map
+    SearchUI->>Analytics: Track search event
+    Analytics->>Convex: Store analytics data
+    SearchUI->>User: Show results and map
+```
+
+### Content Moderation Flow
+
+```mermaid
+sequenceDiagram
+    participant Owner
+    participant Frontend
+    participant Convex
+    participant Admin
+    participant Moderation
+
+    Owner->>Frontend: Submit business listing
+    Frontend->>Convex: Create listing with "pending" status
+    Convex->>Moderation: Queue for review
+    Admin->>Frontend: Review pending listings
+    Admin->>Convex: Approve/reject listing
+    Convex->>Moderation: Log moderation action
+    Convex->>Owner: Notify status change
+    Frontend->>Owner: Show updated status
 ```
 
 ### Payment Integration Flow
@@ -142,7 +325,7 @@ sequenceDiagram
     participant Clerk
     participant Webhook
     participant Convex
-    
+
     User->>Frontend: Subscribe to plan
     Frontend->>Clerk: Process payment
     Clerk->>Webhook: Send payment event
@@ -178,21 +361,41 @@ CLERK_WEBHOOK_SECRET=whsec_...
 
 ### Real-time Data Flow
 ```typescript
-// Query Pattern
-const messages = useQuery(api.messages.list, { channelId });
+// Business Search Query Pattern
+const { results, isLoading } = useBusinessSearch({
+  query: "restaurants",
+  location: { lat: 40.7128, lng: -74.0060 },
+  categories: ["food"],
+  radius: 5000
+});
 
-// Mutation Pattern
-const sendMessage = useMutation(api.messages.send);
+// Geospatial Query Pattern
+const nearbyListings = useQuery(api.listings.searchByLocation, {
+  bounds: { north: 40.8, south: 40.6, east: -73.9, west: -74.1 },
+  categories: ["retail"]
+});
 
-// Subscription Pattern (automatic)
+// Analytics Mutation Pattern
+const trackEvent = useMutation(api.analytics.trackEvent);
+await trackEvent({
+  type: "listing_view",
+  listingId: "listing123",
+  metadata: { source: "search_results" }
+});
+
+// Real-time Updates (automatic)
 // Convex automatically subscribes to query changes
+// New listings appear instantly when approved
 ```
 
 ### State Synchronization
-- **Optimistic Updates** - Immediate UI feedback
-- **Conflict Resolution** - Last-write-wins strategy
-- **Error Handling** - Graceful degradation patterns
-- **Offline Support** - Planned for future versions
+- **Optimistic Updates** - Immediate UI feedback for user actions
+- **Geospatial Indexing** - Efficient location-based queries
+- **Real-time Analytics** - Live event tracking and aggregation
+- **Content Moderation** - Instant status updates for listings
+- **Conflict Resolution** - Last-write-wins with audit trails
+- **Error Handling** - Graceful degradation with retry logic
+- **Offline Support** - Planned with service worker caching
 
 ## 🎨 UI Architecture
 
@@ -219,43 +422,23 @@ const theme = {
 
 ### Animation Architecture
 ```typescript
-// Animation Libraries
+// Enhanced animations for business directory
 import { motion } from "framer-motion";
-import { MotionPrimitives } from "@/components/motion-primitives";
 
-// Animation Patterns
-const variants = {
+const listingVariants = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0 },
+  hover: { scale: 1.02, transition: { duration: 0.2 } }
 };
 ```
 
 ## 🚀 Deployment Architecture
 
-### Vercel Deployment
-```yaml
-# vercel.json
-{
-  "framework": "nextjs",
-  "buildCommand": "npm run build",
-  "functions": {
-    "app/api/**/*.ts": {
-      "runtime": "nodejs18.x"
-    }
-  }
-}
-```
-
-### Environment Management
-- **Development** - Local development with hot reload
-- **Preview** - Branch-based preview deployments
-- **Production** - Main branch auto-deployment
-
-### Performance Optimizations
-- **Turbopack** - Ultra-fast development builds
-- **Image Optimization** - Next.js automatic image optimization
-- **Code Splitting** - Automatic route-based splitting
-- **Edge Functions** - Planned for API routes
+### Vercel Deployment (Optimized for Business Directory)
+- **Geospatial Performance** - Edge functions for location-based queries
+- **Image Optimization** - Automatic optimization for business photos
+- **Analytics Edge** - Real-time event processing
+- **Map Tile Caching** - Optimized Mapbox integration
 
 ## 🔄 Integration Patterns
 
@@ -282,51 +465,35 @@ export const POST = httpAction(async (ctx, request) => {
 ## 📈 Scalability Considerations
 
 ### Database Scaling
-- **Convex Auto-scaling** - Managed scaling
-- **Query Optimization** - Efficient index usage
-- **Data Partitioning** - Planned for large datasets
+- **Convex Auto-scaling** - Managed scaling for business directory
+- **Geospatial Indexing** - Optimized location-based queries
+- **Analytics Partitioning** - Time-based data retention
+- **Image Storage** - Efficient asset management with variants
 
-### Frontend Scaling
-- **Code Splitting** - Reduced bundle sizes
-- **Lazy Loading** - On-demand component loading
-- **CDN Distribution** - Global content delivery
-
-### Monitoring & Observability
-- **Error Tracking** - Planned Sentry integration
-- **Performance Monitoring** - Core Web Vitals tracking
-- **Analytics** - User behavior tracking
+### Performance Monitoring
+- **Real-time Analytics** - Business listing performance tracking
+- **Search Performance** - Query optimization and caching
+- **Map Performance** - Optimized marker clustering and viewport loading
 
 ## 🔧 Development Architecture
 
 ### Code Organization
 ```
-project/
-├── app/                # Next.js App Router
-├── components/         # React components
-├── convex/            # Backend functions
-├── lib/               # Utilities
-├── hooks/             # Custom React hooks
-└── docs/              # Documentation
+business-directory/
+├── app/                # Next.js App Router with directory routes
+├── components/         # React components with business-specific UI
+├── convex/            # Backend functions for listings, analytics, moderation
+├── lib/               # Utilities including geocoding and role management
+├── hooks/             # Custom hooks for search, geolocation, analytics
 ```
 
 ### Development Workflow
-1. **Local Development** - Hot reload with Turbopack
-2. **Type Checking** - Continuous TypeScript validation
-3. **Linting** - ESLint for code quality
-4. **Testing** - Planned Jest/Playwright integration
+1. **Local Development** - Hot reload with Turbopack and Convex dev mode
+2. **Type Checking** - Continuous TypeScript validation with strict mode
 
 ### Build Process
 ```bash
-# Development
 npm run dev          # Start dev server with Turbopack
-
-# Production
-npm run build        # Build optimized bundle
-npm run start        # Start production server
+npx convex dev       # Start Convex backend in development mode
 ```
-
----
-
-**Version**: 1.0.0  
-**Last Updated**: September 17, 2025  
-**Status**: Active Development
+**Version**: 2.0.0 - Business Directory Platform

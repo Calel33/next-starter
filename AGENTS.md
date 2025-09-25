@@ -1,20 +1,23 @@
-# AGENTS.md - Elite Next.js SaaS Starter Kit
+# AGENTS.md - Elite Next.js Business Directory Platform
 
-
-Welcome to the Elite Next.js SaaS Starter Kit! This guide helps AI coding agents work effectively with this modern, production-ready SaaS template.
+Welcome to the Elite Next.js Business Directory Platform! This guide helps AI coding agents work effectively with this comprehensive, production-ready business listing and discovery platform.
 
 ## 🚀 Project Overview
 
-**Elite Next.js SaaS Starter Kit** is a complete SaaS foundation that eliminates weeks of integration work by providing authentication, payments, real-time data, and beautiful UI components working seamlessly out of the box.
+**Elite Next.js Business Directory Platform** is a complete business listing and discovery solution that provides geospatial search, real-time data synchronization, content moderation, analytics tracking, and beautiful UI components working seamlessly together.
 
 ### Core Value Proposition
-"Stop rebuilding the same foundation over and over." This starter provides the easiest setup and cleanest codebase for building SaaS applications with focus on developer experience and production readiness.
+"The complete business directory solution." This platform provides everything needed to build, manage, and scale a business directory with advanced search, mapping, analytics, and moderation capabilities.
 
 ### Key Technologies
 - **Frontend**: Next.js 15 (App Router), TailwindCSS v4, shadcn/ui, Radix UI
 - **Backend**: Convex (real-time database + serverless functions)
-- **Authentication**: Clerk (with social logins)
-- **Payments**: Clerk Billing (integrated subscription management)
+- **Authentication**: Clerk (with role-based access control)
+- **Payments**: Clerk Billing (subscription management for premium features)
+- **Mapping**: Mapbox GL JS (interactive maps with clustering)
+- **Geospatial**: Advanced location-based search and filtering
+- **Analytics**: Real-time event tracking and business intelligence
+- **Moderation**: Content approval workflows and quality control
 - **Animations**: Framer Motion, Motion Primitives
 - **Development**: TypeScript, Turbopack, Vercel deployment
 
@@ -36,28 +39,54 @@ Welcome to the Elite Next.js SaaS Starter Kit! This guide helps AI coding agents
 ## 📁 Project Structure
 
 ```
-elite-next-starter/
+elite-next-business-directory/
 ├── app/                    # Next.js App Router
 │   ├── (landing)/         # Landing page components (grouped route)
-│   ├── dashboard/         # Protected dashboard area
-│   ├── globals.css        # Global styles and CSS variables
+│   ├── dashboard/         # Protected dashboard with admin/owner views
+│   │   ├── admin/         # Admin-only moderation and analytics
+│   │   └── owner/         # Business owner management interface
+│   ├── directory/         # Public business directory interface
+│   │   ├── page.tsx       # Main search and map interface
+│   │   ├── category/      # Category-based browsing
+│   │   ├── listing/       # Individual business pages
+│   │   └── search/        # Advanced search interface
+│   ├── globals.css        # Global styles with design system
 │   ├── layout.tsx         # Root layout with providers
 │   └── not-found.tsx      # Custom 404 page
 ├── components/            # React components
 │   ├── ui/               # shadcn/ui base components
-│   ├── custom/           # Business-specific components
-│   ├── kokonutui/        # KokonutUI components
-│   ├── magicui/          # MagicUI components
-│   ├── motion-primitives/ # Animation components
+│   ├── custom/           # Business directory components
+│   │   ├── SearchInterface.tsx     # Advanced search with filters
+│   │   ├── MapboxMap.tsx          # Interactive map component
+│   │   ├── SearchResults.tsx      # Business listing results
+│   │   ├── FilterPanel.tsx        # Category and location filters
+│   │   ├── BusinessCard.tsx       # Individual business display
+│   │   └── AnalyticsDashboard.tsx # Admin analytics interface
+│   ├── kokonutui/        # Enhanced UI components
+│   ├── magicui/          # Animation components
+│   ├── motion-primitives/ # Advanced animations
 │   └── react-bits/       # Custom animation components
 ├── convex/               # Backend functions and schema
-│   ├── schema.ts         # Database schema definitions
-│   ├── users.ts          # User management functions
-│   ├── paymentAttempts.ts # Payment tracking functions
+│   ├── schema.ts         # Comprehensive database schema
+│   ├── users.ts          # User management with roles
+│   ├── listings.ts       # Business listing CRUD operations
+│   ├── categories.ts     # Category management system
+│   ├── images.ts         # Image upload and processing
+│   ├── analytics.ts      # Event tracking and reporting
+│   ├── moderationLogs.ts # Content moderation system
+│   ├── paymentAttempts.ts # Payment tracking
 │   ├── http.ts           # Webhook handlers
 │   └── auth.config.ts    # Authentication configuration
 ├── hooks/                # Custom React hooks
+│   ├── useBusinessSearch.ts      # Advanced search functionality
+│   ├── useGeolocation.ts         # Location services
+│   ├── useAnalytics.ts           # Event tracking
+│   ├── useModerationStatus.ts    # Content moderation
+│   └── useMapbox.ts              # Map interactions
 ├── lib/                  # Utility functions
+│   ├── geocoding.ts      # Location services
+│   ├── role-utils.ts     # User role management
+│   └── auth-utils.ts     # Authentication helpers
 ├── docs/                 # Project documentation
 │   ├── design-system/    # Design system tokens and guidelines
 │   └── core/            # Core project documentation
@@ -258,156 +287,24 @@ export default defineSchema({
 ### Design System Overview
 Our design system provides a comprehensive foundation for consistent, accessible, and beautiful UI components. **CRITICAL: Always use design system tokens - no hard-coded styles allowed.**
 
-### 🎨 Color Tokens
+### 🎨 Design System Tokens
 
-#### Light Mode (`:root`)
-```css
---background: #f7f9f3;
---foreground: #000000;
---card: #ffffff;
---card-foreground: #000000;
---popover: #ffffff;
---popover-foreground: #000000;
---primary: #4f46e5;
---primary-foreground: #ffffff;
---secondary: #14b8a6;
---secondary-foreground: #ffffff;
---muted: #f0f0f0;
---muted-foreground: #333333;
---accent: #f59e0b;
---accent-foreground: #000000;
---destructive: #ef4444;
---destructive-foreground: #ffffff;
---border: #000000;
---input: #737373;
---ring: #a5b4fc;
-```
+**CRITICAL: Always use design system tokens - no hard-coded styles allowed.**
 
-#### Dark Mode (`.dark`)
-```css
---background: #000000;
---foreground: #ffffff;
---card: #1a212b;
---card-foreground: #ffffff;
---popover: #1a212b;
---popover-foreground: #ffffff;
---primary: #818cf8;
---primary-foreground: #000000;
---secondary: #2dd4bf;
---secondary-foreground: #000000;
---muted: #333333;
---muted-foreground: #cccccc;
---accent: #fcd34d;
---accent-foreground: #000000;
---destructive: #f87171;
---destructive-foreground: #000000;
---border: #545454;
---input: #ffffff;
---ring: #818cf8;
-```
+#### Core Colors
+- **Primary**: #4f46e5 (light) / #818cf8 (dark) - Brand actions
+- **Secondary**: #14b8a6 (light) / #2dd4bf (dark) - Supporting elements
+- **Accent**: #f59e0b (light) / #fcd34d (dark) - Highlights and alerts
 
-#### Data Visualization Colors
-```css
-/* Light Mode Charts */
---chart-1: #4f46e5;
---chart-2: #14b8a6;
---chart-3: #f59e0b;
---chart-4: #ec4899;
---chart-5: #22c55e;
+#### Typography
+- **Font Sans**: "Allerta Stencil", ui-sans-serif, system-ui
+- **Font Serif**: "Amiri Quran", ui-serif
+- **Font Mono**: "Anonymous Pro", ui-monospace
 
-/* Dark Mode Charts */
---chart-1: #818cf8;
---chart-2: #2dd4bf;
---chart-3: #fcd34d;
---chart-4: #f472b6;
---chart-5: #4ade80;
-```
-
-#### Sidebar UI Shell Colors
-```css
-/* Light Sidebar */
---sidebar-background: #f7f9f3;
---sidebar-foreground: #000000;
---sidebar-primary: #4f46e5;
---sidebar-primary-foreground: #ffffff;
---sidebar-accent: #f59e0b;
---sidebar-accent-foreground: #000000;
---sidebar-border: #000000;
---sidebar-ring: #a5b4fc;
-
-/* Dark Sidebar */
---sidebar-background: #000000;
---sidebar-foreground: #ffffff;
---sidebar-primary: #818cf8;
---sidebar-primary-foreground: #000000;
---sidebar-accent: #fcd34d;
---sidebar-accent-foreground: #000000;
---sidebar-border: #ffffff;
---sidebar-ring: #818cf8;
-```
-
-### ✍️ Typography System
-
-#### Font Families
-```css
---font-sans: "Allerta Stencil", ui-sans-serif, system-ui;
---font-serif: "Amiri Quran", ui-serif;
---font-mono: "Anonymous Pro", ui-monospace;
-```
-
-#### Type Scale
-- **H1**: 32–36px (2rem–2.25rem)
-- **H2**: 24–28px (1.5rem–1.75rem)
-- **H3**: 18–20px (1.125rem–1.25rem)
-- **Body**: 16px (1rem)
-- **Small**: 14px (0.875rem)
-
-#### Font Weights
-- **Regular**: 400
-- **Semibold**: 600
-- **Bold**: 700
-
-#### Letter Spacing
-```css
---tracking-normal: 0.025em;
---tracking-tighter: -0.05em;
---tracking-tight: -0.025em;
---tracking-wide: 0.05em;
---tracking-wider: 0.1em;
---tracking-widest: 0.25em;
-```
-
-### 🟦 Spacing & Layout
-
-#### Spacing Scale (4/8px modular scale)
-```css
---spacing: 0.25rem; /* Base unit: 4px */
-```
-
-#### Container & Grid
-- **Container max-width**: 1280px
-- **Gutters**: 16–24px
-- **Grid**: 12-column flexible system
-
-### 🟣 Shape & Shadows
-
-#### Border Radius
-```css
---radius: 1rem;
---radius-sm: calc(var(--radius) - 4px);
---radius-md: calc(var(--radius) - 2px);
---radius-lg: var(--radius);
---radius-xl: calc(var(--radius) + 4px);
-```
-
-#### Shadow System
-```css
---shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
---shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
---shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
---shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
---shadow-2xl: 0 25px 50px -12px rgb(0 0 0 / 0.25);
-```
+#### Spacing & Layout
+- **Base Unit**: 4px (0.25rem)
+- **Container**: 1280px max-width
+- **Border Radius**: 1rem base with calculated variants
 
 ### 🌑 Design System Usage Rules
 
@@ -461,55 +358,6 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 
 Button.displayName = "Button";
 export { Button };
-```
-
-#### Typography Component Example
-```typescript
-// Typography component using design system
-import { cn } from "@/lib/utils";
-
-interface TypographyProps extends React.HTMLAttributes<HTMLElement> {
-  variant?: "h1" | "h2" | "h3" | "body" | "small";
-  weight?: "regular" | "semibold" | "bold";
-  tracking?: "normal" | "tight" | "wide";
-}
-
-const Typography = forwardRef<HTMLElement, TypographyProps>(
-  ({ className, variant = "body", weight = "regular", tracking = "normal", ...props }, ref) => {
-    const Component = variant === "body" || variant === "small" ? "p" : variant;
-    
-    return (
-      <Component
-        ref={ref}
-        className={cn(
-          "font-sans",
-          // Variant styles
-          {
-            "text-2xl md:text-4xl": variant === "h1",
-            "text-xl md:text-2xl": variant === "h2",
-            "text-lg md:text-xl": variant === "h3",
-            "text-base": variant === "body",
-            "text-sm": variant === "small",
-          },
-          // Weight styles
-          {
-            "font-normal": weight === "regular",
-            "font-semibold": weight === "semibold",
-            "font-bold": weight === "bold",
-          },
-          // Tracking styles
-          {
-            "tracking-normal": tracking === "normal",
-            "tracking-tight": tracking === "tight",
-            "tracking-wide": tracking === "wide",
-          },
-          className
-        )}
-        {...props}
-      />
-    );
-  }
-);
 ```
 
 ### Animation Guidelines
@@ -586,30 +434,7 @@ const sendMessage = useMutation(api.messages.send);
 - **Image Optimization**: Next.js automatic optimization
 - **Edge Functions**: Planned for API routes
 
-## 📚 Documentation Standards
 
-### File Documentation
-- **README.md**: Project overview and quick start
-- **API Documentation**: Document all Convex functions
-- **Component Documentation**: JSDoc comments for complex components
-- **Architecture Docs**: High-level system design
-
-### Code Comments
-```typescript
-/**
- * Creates a new user in the system and syncs with Clerk
- * @param name - User's display name
- * @param externalId - Clerk user ID for authentication
- * @returns The created user's database ID
- */
-export const createUser = mutation({
-  args: { name: v.string(), externalId: v.string() },
-  returns: v.id("users"),
-  handler: async (ctx, args) => {
-    // Implementation
-  },
-});
-```
 
 ## 🐛 Common Gotchas
 
@@ -653,24 +478,6 @@ export const createUser = mutation({
 - [ ] Mobile responsiveness verified
 - [ ] Documentation updated
 
-## 🤝 Agent Collaboration Guidelines
-
-### When to Delegate
-- **Complex Architecture Changes** → `@project-researcher-agent`
-- **Code Review Needed** → `@code-reviewer`
-- **Performance Issues** → `@performance-optimizer` 
-- **UI/UX Improvements** → `@ui-configurator-agent`
-- **Documentation Updates** → `@documentation-specialist`
-
-### Handoff Pattern
-```markdown
-## Context for Next Agent
-- Current task: [description]
-- Files modified: [list]
-- Next steps: [recommendations]
-- Blockers: [any issues]
-```
-
 ## 📞 Support and Resources
 
 ### Official Documentation
@@ -686,10 +493,6 @@ export const createUser = mutation({
 - `convex/README.md` - Backend function examples
 - Component examples in `components/` folders
 
----
-
-**Last Updated**: September 20, 2025  
-**Version**: 1.0.0  
-**Maintained by**: Elite Next.js SaaS Starter Kit Team
-
-*This AGENTS.md file is designed to help AI coding agents work effectively with this project. Keep it updated as the project evolves.*
+**Last Updated**: September 24, 2025
+**Version**: 2.0.0
+**Maintained by**: Elite Next.js Business Directory Platform Team

@@ -6,6 +6,7 @@ import { Toaster } from "@/components/ui/sonner";
 
 import { ClerkProvider } from '@clerk/nextjs'
 import ConvexClientProvider from '@/components/ConvexClientProvider'
+import { SignupContextProvider } from '@/components/custom/SignupContextProvider'
 
 
 const geistSans = Geist({
@@ -41,8 +42,10 @@ export default function RootLayout({
         >
           <ClerkProvider>
             <ConvexClientProvider>
-              {children}
-              <Toaster />
+              <SignupContextProvider>
+                {children}
+                <Toaster />
+              </SignupContextProvider>
             </ConvexClientProvider>
           </ClerkProvider>
         </ThemeProvider>

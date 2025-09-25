@@ -1,0 +1,15 @@
+**Problem Description:**
+[Describe the visual issue you're experiencing]
+Example: "problem: its being cut off on the right side photo and text"
+
+**Element Context:**
+[Provide the specific HTML/CSS element that's having the issue]
+Example: "our element: <div class="flex h-full flex-1 flex-col gap-4 rounded-lg min-w-60 ">..."
+
+**Expected Behavior:**
+[Optional: Describe what should happen instead]
+Example: "The business cards should be fully visible and scrollable horizontally"
+
+**Additional Context:**
+[Optional: Any relevant information about the component or layout]
+Example: "This is in a featured businesses section that should scroll horizontally"

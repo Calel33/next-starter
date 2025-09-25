@@ -36,7 +36,7 @@ A systematic approach to clarify tasks, gather context, research solutions, and 
 - [ ] Document existing patterns and conventions
 - [ ] Map current architecture
 
-**Output:** Comprehensive project context analysis
+**Output:** Comprehensive project task context analysis
 
 ---
 

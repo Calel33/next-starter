@@ -95,6 +95,27 @@ type: "always_apply"---
   </agents>
 
   <workflow>
+   Before making any change, identify and update ALL systems that depend on what you're changing.
+
+   How to Apply It:
+
+     1. Ask: "What other parts of the system read, write, or depend on this data/functionality?"
+     2. Map: List all the dependent systems/files
+     3. Update: Make changes to ALL dependent systems in the same commit/PR
+     4. Test: Verify the complete flow works end-to-end
+
+   Example:
+     • Changing user roles? → Update: database schema, middleware, UI components, type definitions, and sync logic
+     • Adding new auth flow? → Update: signup components, backend handlers, route protection, and onboarding
+     • Modifying API response? → Update: frontend consumers, type definitions, error handling, and documentation
+
+   Why This Works:
+     • Prevents "half-updated" systems
+     • Forces you to think holistically
+     • Catches integration issues early
+     • Maintains system consistency
+
+   The rule is simple: Don't leave any system "half-updated" when you make a change.
     <rule>Test-first development (preferred)</rule>
     <rule>Think hard before architecting</rule>
     <rule>Break tasks into smaller units</rule>

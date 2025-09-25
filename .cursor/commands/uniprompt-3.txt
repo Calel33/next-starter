@@ -1,0 +1,16 @@
+**Task Type:** [Bug Fix | Feature Implementation | Enhancement | Refactoring | Integration]
+
+**Current State:**
+[Describe what exists now or paste relevant code/element]
+
+**Desired State:**
+[Describe what you want to achieve]
+
+**Context:**
+[Provide relevant technical context - framework, auth system, existing patterns, etc.]
+
+**Constraints:**
+[Any limitations, requirements, or preferences]
+
+**Additional Info:**
+[Optional: Any other relevant details]

@@ -22,7 +22,7 @@ export default clerkMiddleware(async (auth, req) => {
 
     // Get user session to check roles
     const { sessionClaims, userId } = await auth()
-    const userRole = sessionClaims?.metadata?.role as string | undefined
+    const userRole = sessionClaims?.publicMetadata?.role as string | undefined
 
     // Enhanced role-based route protection with detailed logging
     if (isAdminRoute(req)) {

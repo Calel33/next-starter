@@ -1,29 +1,29 @@
-import HeroSection from "./hero-section";
-import FeaturesOne from "./features-one";
-import Testimonials from "./testimonials";
-import CallToAction from "./call-to-action";
-import FAQs from "./faqs";
-import Footer from "./footer";
-import CustomClerkPricing from "@/components/custom-clerk-pricing";
+import { LocalBizHeader } from "./components/LocalBizHeader";
+import { HeroSection } from "./components/HeroSection";
+import { MapSection } from "./components/MapSection";
+import { FeaturedBusinesses } from "./components/FeaturedBusinesses";
+import { PopularCategories } from "./components/PopularCategories";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "LocalBiz - Explore Local Businesses Worldwide",
+  description: "Discover top-rated services and businesses in any location. Use the interactive globe to find businesses near you or anywhere in the world.",
+};
 
 export default function Home() {
   return (
-    <div>
-      <HeroSection />
-      <FeaturesOne />
-      <section className="bg-muted/50 py-16 md:py-32">
-        <div className="mx-auto max-w-7xl px-6">
-          <div className="mb-12 mx-auto max-w-2xl space-y-6 text-center">
-              <h1 className="text-center text-4xl font-semibold lg:text-5xl">Pricing that Scales with You</h1>
-              <p>Gemini is evolving to be more than just the models. It supports an entire to the APIs and platforms helping developers and businesses innovate.</p>
+    <div className="relative flex size-full min-h-screen flex-col bg-background group/design-root overflow-x-hidden font-sans">
+      <div className="layout-container flex h-full grow flex-col">
+        <LocalBizHeader />
+        <div className="px-40 flex flex-1 justify-center py-5">
+          <div className="layout-content-container flex flex-col max-w-[960px] flex-1">
+            <HeroSection />
+            <MapSection />
+            <FeaturedBusinesses />
+            <PopularCategories />
           </div>
-          <CustomClerkPricing />
         </div>
-      </section>
-      <Testimonials />
-      <CallToAction />
-      <FAQs />
-      <Footer />
+      </div>
     </div>
   );
 }

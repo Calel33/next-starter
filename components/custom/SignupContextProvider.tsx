@@ -1,7 +1,7 @@
 'use client'
 
 import { createContext, useContext, useState, useEffect } from 'react'
-import { useUser } from '@clerk/nextjs'
+import { useUser, SignUpButton } from '@clerk/nextjs'
 
 interface SignupContext {
   signupContext: 'visitor' | 'business-owner' | 'claim-listing' | null
@@ -66,12 +66,15 @@ export function BusinessOwnerSignupButton({ children, businessName, businessType
   const handleClick = () => {
     setSignupContext('business-owner')
     setBusinessInfo({ businessName, businessType })
+    // The SignUpButton will be triggered by the child component
   }
 
   return (
-    <div onClick={handleClick}>
-      {children}
-    </div>
+    <SignUpButton mode="modal">
+      <div onClick={handleClick}>
+        {children}
+      </div>
+    </SignUpButton>
   )
 }
 
@@ -84,12 +87,15 @@ export function ClaimListingSignupButton({ children, listingId }: {
   const handleClick = () => {
     setSignupContext('claim-listing')
     setBusinessInfo({ claimingListingId: listingId })
+    // The SignUpButton will be triggered by the child component
   }
 
   return (
-    <div onClick={handleClick}>
-      {children}
-    </div>
+    <SignUpButton mode="modal">
+      <div onClick={handleClick}>
+        {children}
+      </div>
+    </SignUpButton>
   )
 }
 
@@ -98,11 +104,14 @@ export function VisitorSignupButton({ children }: { children: React.ReactNode })
 
   const handleClick = () => {
     setSignupContext('visitor')
+    // The SignUpButton will be triggered by the child component
   }
 
   return (
-    <div onClick={handleClick}>
-      {children}
-    </div>
+    <SignUpButton mode="modal">
+      <div onClick={handleClick}>
+        {children}
+      </div>
+    </SignUpButton>
   )
 }

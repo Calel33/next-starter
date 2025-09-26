@@ -1,0 +1,235 @@
+# admin-dash-ui — Admin Dashboard UI Integration Prompt
+
+Use this prompt to translate the provided admin dashboard design into our Elite Next.js Business Directory Platform while preserving every architectural and design constraint.
+
+---
+
+## Full Prompt
+
+```
+I want to integrate a custom admin dashboard UI into our Elite Next.js Business Directory Platform project. Please extract and adapt this interface to work with our Next.js 15 + React 19 stack.
+dont forget the to use the layoutfrom source code
+
+**CURRENT PROJECT CONTEXT:**
+- Framework: Next.js 15 App Router (React Server Components + "use client" islands)
+- Styling: Tailwind CSS v4 with project design tokens, shadcn/ui primitives, Radix UI underpinnings
+- Backend: Convex (real-time database + serverless functions) with Clerk authentication/billing
+- Language: TypeScript (strict, no `any`, prefer explicit interfaces)
+- Target slice: `app/dashboard/admin/` with supporting components in `components/custom/`
+- Design system rules: tokenized colors/spacing/radius/shadows, light+dark theming, accessibility-first
+- Architecture: vertical slice per feature, composition over inheritance, files ≤ 500 LOC, reuse shared hooks/utilities
+- Existing functionality: role-gated dashboards, analytics widgets, Convex-powered real-time metrics, Clerk user context
+
+**UI TO INTEGRATE (SOURCE HTML):**
+```html
+<html>
+  <head>
+    <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="" />
+    <link
+      rel="stylesheet"
+      as="style"
+      onload="this.rel='stylesheet'"
+      href="https://fonts.googleapis.com/css2?display=swap&amp;family=Manrope%3Awght%40400%3B500%3B700%3B800&amp;family=Noto+Sans%3Awght%40400%3B500%3B700%3B900"
+    />
+    <title>Stitch Design</title>
+    <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64," />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  </head>
+  <body>
+    <div class="relative flex h-auto min-h-screen w-full flex-col bg-gray-50 group/design-root overflow-x-hidden" style='font-family: Manrope, "Noto Sans", sans-serif;'>
+      <div class="layout-container flex h-full grow flex-col">
+        <div class="gap-1 px-6 flex flex-1 justify-center py-5">
+          <div class="layout-content-container flex flex-col w-80">
+            <div class="flex h-full min-h-[700px] flex-col justify-between bg-gray-50 p-4">
+              <div class="flex flex-col gap-4">
+                <h1 class="text-[#111418] text-base font-medium leading-normal">Admin Panel</h1>
+                <div class="flex flex-col gap-2">
+                  <div class="flex items-center gap-3 px-3 py-2 rounded-lg bg-[#eaedf0]">
+                    <div class="text-[#111418]" data-icon="House" data-size="24px" data-weight="fill">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
+                        <path
+                          d="M224,115.55V208a16,16,0,0,1-16,16H168a16,16,0,0,1-16-16V168a8,8,0,0,0-8-8H112a8,8,0,0,0-8,8v40a16,16,0,0,1-16,16H48a16,16,0,0,1-16-16V115.55a16,16,0,0,1,5.17-11.78l80-75.48.11-.11a16,16,0,0,1,21.53,0,1.14,1.14,0,0,0,.11.11l80,75.48A16,16,0,0,1,224,115.55Z"
+                        ></path>
+                      </svg>
+                    </div>
+                    <p class="text-[#111418] text-sm font-medium leading-normal">Dashboard</p>
+                  </div>
+                  <div class="flex items-center gap-3 px-3 py-2">
+                    <div class="text-[#111418]" data-icon="ListBullets" data-size="24px" data-weight="regular">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
+                        <path
+                          d="M80,64a8,8,0,0,1,8-8H216a8,8,0,0,1,0,16H88A8,8,0,0,1,80,64Zm136,56H88a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16Zm0,64H88a8,8,0,0,0,0,16H216a8,8,0,0,0,0-16ZM44,52A12,12,0,1,0,56,64,12,12,0,0,0,44,52Zm0,64a12,12,0,1,0,12,12A12,12,0,0,0,44,116Zm0,64a12,12,0,1,0,12,12A12,12,0,0,0,44,180Z"
+                        ></path>
+                      </svg>
+                    </div>
+                    <p class="text-[#111418] text-sm font-medium leading-normal">Listings</p>
+                  </div>
+                  <div class="flex items-center gap-3 px-3 py-2">
+                    <div class="text-[#111418]" data-icon="Star" data-size="24px" data-weight="regular">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
+                        <path
+                          d="M239.2,97.29a16,16,0,0,0-13.81-11L166,81.17,142.72,25.81h0a15.95,15.95,0,0,0-29.44,0L90.07,81.17,30.61,86.32a16,16,0,0,0-9.11,28.06L66.61,153.8,53.09,212.34a16,16,0,0,0,23.84,17.34l51-31,51.11,31a16,16,0,0,0,23.84-17.34l-13.51-58.6,45.1-39.36A16,16,0,0,0,239.2,97.29Zm-15.22,5-45.1,39.36a16,16,0,0,0-5.08,15.71L187.35,216v0l-51.07-31a15.9,15.9,0,0,0-16.54,0l-51,31h0L82.2,157.4a16,16,0,0,0-5.08-15.71L32,102.35a.37.37,0,0,1,0-.09l59.44-5.14a16,16,0,0,0,13.35-9.75L128,32.08l23.2,55.29a16,16,0,0,0,13.35,9.75L224,102.26S224,102.32,224,102.33Z"
+                        ></path>
+                      </svg>
+                    </div>
+                    <p class="text-[#111418] text-sm font-medium leading-normal">Reviews</p>
+                  </div>
+                  <div class="flex items-center gap-3 px-3 py-2">
+                    <div class="text-[#111418]" data-icon="ChartLine" data-size="24px" data-weight="regular">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
+                        <path
+                          d="M232,208a8,8,0,0,1-8,8H32a8,8,0,0,1-8-8V48a8,8,0,0,1,16,0v94.37L90.73,98a8,8,0,0,1,10.07-.38l58.81,44.11L218.73,90a8,8,0,1,1,10.54,12l-64,56a8,8,0,0,1-10.07.38L96.39,114.29,40,163.63V200H224A8,8,0,0,1,232,208Z"
+                        ></path>
+                      </svg>
+                    </div>
+                    <p class="text-[#111418] text-sm font-medium leading-normal">Analytics</p>
+                  </div>
+                  <div class="flex items-center gap-3 px-3 py-2">
+                    <div class="text-[#111418]" data-icon="Gear" data-size="24px" data-weight="regular">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" fill="currentColor" viewBox="0 0 256 256">
+                        <path
+                          d="M128,80a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,80Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,160Zm88-29.84q.06-2.16,0-4.32l14.92-18.64a8,8,0,0,0,1.48-7.06,107.21,107.21,0,0,0-10.88-26.25,8,8,0,0,0-6-3.93l-23.72-2.64q-1.48-1.56-3-3L186,40.54a8,8,0,0,0-3.94-6,107.71,107.71,0,0,0-26.25-10.87,8,8,0,0,0-7.06,1.49L130.16,40Q128,40,125.84,40L107.2,25.11a8,8,0,0,0-7.06-1.48A107.6,107.6,0,0,0,73.89,34.51a8,8,0,0,0-3.93,6L67.32,64.27q-1.56,1.49-3,3L40.54,70a8,8,0,0,0-6,3.94,107.71,107.71,0,0,0-10.87,26.25,8,8,0,0,0,1.49,7.06L40,125.84Q40,128,40,130.16L25.11,148.8a8,8,0,0,0-1.48,7.06,107.21,107.21,0,0,0,10.88,26.25,8,8,0,0,0,6,3.93l23.72,2.64q1.49,1.56,3,3L70,215.46a8,8,0,0,0,3.94,6,107.71,107.71,0,0,0,26.25,10.87,8,8,0,0,0,7.06-1.49L125.84,216q2.16.06,4.32,0l18.64,14.92a8,8,0,0,0,7.06,1.48,107.21,107.21,0,0,0,26.25-10.88,8,8,0,0,0,3.93-6l2.64-23.72q1.56-1.48,3-3L215.46,186a8,8,0,0,0,6-3.94,107.71,107.71,0,0,0,10.87-26.25,8,8,0,0,0-1.49-7.06Zm-16.1-6.5a73.93,73.93,0,0,1,0,8.68,8,8,0,0,0,1.74,5.48l14.19,17.73a91.57,91.57,0,0,1-6.23,15L187,173.11a8,8,0,0,0-5.1,2.64,74.11,74.11,0,0,1-6.14,6.14,8,8,0,0,0-2.64,5.1l-2.51,22.58a91.32,91.32,0,0,1-15,6.23l-17.74-14.19a8,8,0,0,0-5-1.75h-.48a73.93,73.93,0,0,1-8.68,0,8,8,0,0,0-5.48,1.74L100.45,215.8a91.57,91.57,0,0,1-15-6.23L82.89,187a8,8,0,0,0-2.64-5.1,74.11,74.11,0,0,1-6.14-6.14,8,8,0,0,0-5.1-2.64L46.43,170.6a91.32,91.32,0,0,1-6.23-15l14.19-17.74a8,8,0,0,0,1.74-5.48,73.93,73.93,0,0,1,0-8.68,8,8,0,0,0-1.74-5.48L40.2,100.45a91.57,91.57,0,0,1,6.23-15L69,82.89a8,8,0,0,0,5.1-2.64,74.11,74.11,0,0,1,6.14-6.14A8,8,0,0,0,82.89,69L85.4,46.43a91.32,91.32,0,0,1,15-6.23l17.74,14.19a8,8,0,0,0,5.48,1.74,73.93,73.93,0,0,1,8.68,0,8,8,0,0,0,5.48-1.74L155.55,40.2a91.57,91.57,0,0,1,15,6.23L173.11,69a8,8,0,0,0,2.64,5.1,74.11,74.11,0,0,1,6.14,6.14,8,8,0,0,0,5.1,2.64l22.58,2.51a91.32,91.32,0,0,1,6.23,15l-14.19,17.74A8,8,0,0,0,199.87,123.66Z"
+                        ></path>
+                      </svg>
+                    </div>
+                    <p class="text-[#111418] text-sm font-medium leading-normal">Settings</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="layout-content-container flex flex-col max-w-[960px] flex-1">
+            <div class="flex flex-wrap justify-between gap-3 p-4"><p class="text-[#111418] tracking-light text-[32px] font-bold leading-tight min-w-72">Dashboard</p></div>
+            <h2 class="text-[#111418] text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">Overview</h2>
+            <div class="flex flex-wrap gap-4 p-4">
+              <div class="flex min-w-[158px] flex-1 flex-col gap-2 rounded-lg p-6 border border-[#d5dbe1]">
+                <p class="text-[#111418] text-base font-medium leading-normal">New Listings</p>
+                <p class="text-[#111418] tracking-light text-2xl font-bold leading-tight">25</p>
+              </div>
+              <div class="flex min-w-[158px] flex-1 flex-col gap-2 rounded-lg p-6 border border-[#d5dbe1]">
+                <p class="text-[#111418] text-base font-medium leading-normal">Pending Approvals</p>
+                <p class="text-[#111418] tracking-light text-2xl font-bold leading-tight">5</p>
+              </div>
+              <div class="flex min-w-[158px] flex-1 flex-col gap-2 rounded-lg p-6 border border-[#d5dbe1]">
+                <p class="text-[#111418] text-base font-medium leading-normal">Revenue</p>
+                <p class="text-[#111418] tracking-light text-2xl font-bold leading-tight">$1,500</p>
+              </div>
+            </div>
+            <h2 class="text-[#111418] text-[22px] font-bold leading-tight tracking-[-0.015em] px-4 pb-3 pt-5">Analytics</h2>
+            <div class="flex flex-wrap gap-4 px-4 py-6">
+              <div class="flex min-w-72 flex-1 flex-col gap-2 rounded-lg border border-[#d5dbe1] p-6">
+                <p class="text-[#111418] text-base font-medium leading-normal">Listings Over Time</p>
+                <p class="text-[#111418] tracking-light text-[32px] font-bold leading-tight truncate">+15%</p>
+                <div class="flex gap-1">
+                  <p class="text-[#5f7286] text-base font-normal leading-normal">Last 30 Days</p>
+                  <p class="text-[#078838] text-base font-medium leading-normal">+15%</p>
+                </div>
+                <div class="flex min-h-[180px] flex-1 flex-col gap-8 py-4">
+                  <svg width="100%" height="148" viewBox="-3 0 478 150" fill="none" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+                    <path
+                      d="M0 109C18.1538 109 18.1538 21 36.3077 21C54.4615 21 54.4615 41 72.6154 41C90.7692 41 90.7692 93 108.923 93C127.077 93 127.077 33 145.231 33C163.385 33 163.385 101 181.538 101C199.692 101 199.692 61 217.846 61C236 61 236 45 254.154 45C272.308 45 272.308 121 290.462 121C308.615 121 308.615 149 326.769 149C344.923 149 344.923 1 363.077 1C381.231 1 381.231 81 399.385 81C417.538 81 417.538 129 435.692 129C453.846 129 453.846 25 472 25V149H326.769H0V109Z"
+                      fill="url(#paint0_linear_1131_5935)"
+                    ></path>
+                    <path
+                      d="M0 109C18.1538 109 18.1538 21 36.3077 21C54.4615 21 54.4615 41 72.6154 41C90.7692 41 90.7692 93 108.923 93C127.077 93 127.077 33 145.231 33C163.385 33 163.385 101 181.538 101C199.692 101 199.692 61 217.846 61C236 61 236 45 254.154 45C272.308 45 272.308 121 290.462 121C308.615 121 308.615 149 326.769 149C344.923 149 344.923 1 363.077 1C381.231 1 381.231 81 399.385 81C417.538 81 417.538 129 435.692 129C453.846 129 453.846 25 472 25"
+                      stroke="#5f7286"
+                      stroke-width="3"
+                      stroke-linecap="round"
+                    ></path>
+                    <defs>
+                      <linearGradient id="paint0_linear_1131_5935" x1="236" y1="1" x2="236" y2="149" gradientUnits="userSpaceOnUse">
+                        <stop stop-color="#eaedf0"></stop>
+                        <stop offset="1" stop-color="#eaedf0" stop-opacity="0"></stop>
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                  <div class="flex justify-around">
+                    <p class="text-[#5f7286] text-[13px] font-bold leading-normal tracking-[0.015em]">Jan</p>
+                    <p class="text-[#5f7286] text-[13px] font-bold leading-normal tracking-[0.015em]">Feb</p>
+                    <p class="text-[#5f7286] text-[13px] font-bold leading-normal tracking-[0.015em]">Mar</p>
+                    <p class="text-[#5f7286] text-[13px] font-bold leading-normal tracking-[0.015em]">Apr</p>
+                    <p class="text-[#5f7286] text-[13px] font-bold leading-normal tracking-[0.015em]">May</p>
+                    <p class="text-[#5f7286] text-[13px] font-bold leading-normal tracking-[0.015em]">Jun</p>
+                  </div>
+                </div>
+              </div>
+              <div class="flex min-w-72 flex-1 flex-col gap-2 rounded-lg border border-[#d5dbe1] p-6">
+                <p class="text-[#111418] text-base font-medium leading-normal">Revenue by Category</p>
+                <p class="text-[#111418] tracking-light text-[32px] font-bold leading-tight truncate">+8%</p>
+                <div class="flex gap-1">
+                  <p class="text-[#5f7286] text-base font-normal leading-normal">Last 30 Days</p>
+                  <p class="text-[#078838] text-base font-medium leading-normal">+8%</p>
+                </div>
+                <div class="grid min-h-[180px] grid-flow-col gap-6 grid-rows-[1fr_auto] items-end justify-items-center px-3">
+                  <div class="border-[#5f7286] bg-[#eaedf0] border-t-2 w-full" style="height: 80%;"></div>
+                  <p class="text-[#5f7286] text-[13px] font-bold leading-normal tracking-[0.015em]">Food</p>
+                  <div class="border-[#5f7286] bg-[#eaedf0] border-t-2 w-full" style="height: 20%;"></div>
+                  <p class="text-[#5f7286] text-[13px] font-bold leading-normal tracking-[0.015em]">Retail</p>
+                  <div class="border-[#5f7286] bg-[#eaedf0] border-t-2 w-full" style="height: 50%;"></div>
+                  <p class="text-[#5f7286] text-[13px] font-bold leading-normal tracking-[0.015em]">Services</p>
+                  <div class="border-[#5f7286] bg-[#eaedf0] border-t-2 w-full" style="height: 20%;"></div>
+                  <p class="text-[#5f7286] text-[13px] font-bold leading-normal tracking-[0.015em]">Other</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+```
+
+**INTEGRATION REQUIREMENTS:**
+1. **Design System Compliance**
+   - Map every color, spacing, radius, typography, and shadow to our tokens defined in `app/globals.css`, `components/ui/`, and documented in `designsystem.md` / `AGENTS.md` (no raw hex values, arbitrary Tailwind colors, or inline styles in final code).
+   - Replace all palette references from the source HTML with semantic utility classes (`text-muted-foreground`, `bg-sidebar`, `border-border`, etc.) or component variants that already encapsulate tokens.
+   - Ensure light/dark theme parity via token-aware classes and verify the result in both themes before delivery.
+
+2. **Component Architecture**
+   - Build reusable dashboard components (e.g., `AdminSidebar`, `MetricCard`, `AnalyticsOverview`).
+   - Place shared pieces in `components/custom/` with clear props and TypeScript types.
+   - Keep files ≤ 500 LOC, splitting by responsibility if needed.
+
+3. **Icon & Font Strategy**
+   - Swap embedded SVGs for Lucide or shadcn/ui icons using existing wrappers.
+   - Use Next.js font optimization for typography (no external `<link>`).
+   - Respect existing `cn()` utility for class merging.
+
+4. **Data & State Integration**
+   - Wire metrics to Convex queries (`useAdminAnalytics()` / `useAnalytics()`), providing mock fallbacks if data unavailable.
+   - Keep role-aware gating using `role-utils.ts` helpers.
+   - Track events (e.g., card interactions) via Convex mutations where appropriate.
+
+5. **Accessibility & Responsiveness**
+   - Ensure keyboard nav for sidebar, ARIA labeling for sections, focus-visible states.
+   - Maintain responsive behavior down to mobile breakpoints (stacked cards/sidebar toggle).
+   - Provide reduced-motion-friendly animations.
+
+6. **Testing & Validation**
+   - Extend or add tests in `__tests__/integration/admin-moderation.test.ts` and related suites.
+   - Validate TypeScript passes (`pnpm lint`, `pnpm typecheck`).
+   - Document manual QA in session log.
+
+**DELIVERABLES:**
+- Updated dashboard page (`app/dashboard/admin/page.tsx`) incorporating new layout.
+- Supporting components under `components/custom/admin/` (create subdirectory if helpful).
+- Tailwind class mappings aligned with tokens; additional variant classes if required in `components/ui/`.
+- Updated analytics hooks or Convex functions if new data needs.
+- Tests + docs updates (`docs/core/ARCHITECTURE.md` or feature-specific docs if behavior changes).
+
+**TEST PLAN:**
+- Run component and integration tests touching admin dashboard views.
+- Confirm live data updates via Convex dev environment.
+- Verify light/dark mode rendering, mobile responsiveness, and accessibility scans (e.g., Axe).
+
+Please follow the above requirements step-by-step, maintaining backwards compatibility and existing functionality while matching the supplied UI design.
+```
+
+---
+
+## Usage Notes
+
+- Copy the **Full Prompt** block into our multi-agent workflow when ready to start implementation.
+- Replace or append any metric-specific requirements before dispatching to specialists.
+- Always log progress in `docs/sessions/` following the project constitution.

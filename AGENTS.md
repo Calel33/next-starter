@@ -278,3 +278,47 @@ const sendMessage = useMutation(api.messages.send);
 - `docs/core/` - Detailed project documentation
 - `docs/SESSION_LOG.md` - Development session history
 - `convex/README.md` - Backend function examples
+
+## System Rules
+
+**CRITICAL: Always follow these system rules for all development work.**
+
+### Agent Mode Protocol
+- **Auto-selection**: Automatically select the best agent for a given task
+- **Agent switching**: Use `@[agent-file]` to switch modes
+- **Multi-agent coordination**: Use `/multiagent` for complex tasks
+- **Deep task workflow**: Use `/deeptask` for 5-phase development
+
+### Code Structure Rules
+- **One responsibility per file** - Maximum 500 lines per file
+- **Modular design enforced** - Use relative imports
+- **Component-first approach** - Reusable, composable components
+- **Vertical slice architecture** - Features organized by domain
+
+### Design System Enforcement
+- **CRITICAL**: Always use design system tokens - no hard-coded styles allowed
+- **Core tokens**: Primary (#4f46e5), Secondary (#14b8a6), Accent (#f59e0b)
+- **Base unit**: 4px (0.25rem)
+- **Container**: 1280px max-width
+
+### Development Principles
+- **KISS**: Simplicity over complexity
+- **YAGNI**: Don't implement features unless needed now
+- **Performance by default**: Focus on clean, readable code
+- **Fail-fast validation**: Validate inputs early
+
+### Security Standards
+- **Authentication**: JWT validation via Convex + Clerk
+- **Input validation**: Zod schemas + Convex validators
+- **Environment variables**: Never expose secrets in client code
+- **Route protection**: Use middleware for protected routes
+
+### Quality Checklist
+- [ ] TypeScript types properly defined
+- [ ] Components are accessible (ARIA attributes)
+- [ ] Error handling implemented
+- [ ] Loading states handled
+- [ ] Mobile responsiveness verified
+- [ ] Documentation updated
+- [ ] Design system tokens used (no hard-coded styles)
+- [ ] Session documentation completed
